@@ -22,7 +22,7 @@ do
     (
         (
             ssh -q ec2-user@$dnsname "bash -s" < rumble_environment.sh       
-            scp ${SCRIPT_PATH}/execute_query.sh ec2-user@$dnsname:~
+            scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ec2-user@$dnsname:~
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
     ) &

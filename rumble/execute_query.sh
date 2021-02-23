@@ -2,6 +2,7 @@
 
 if [[ $# != 2 ]]; then
 	echo "Usage: execute_query.sh <query_id> <data_size>"
+	exit
 fi
 
 java_ver=jdk1.8.0_271
