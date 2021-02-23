@@ -5,8 +5,8 @@ if [[ $# != 2 ]]; then
 fi
 
 java_ver=jdk1.8.0_271
-spark_ver=spark-3.0.1-bin-hadoop2.7
-rumble_ver=spark-rumble-1.10.0-for-spark-3.0.jar
+spark_ver=spark-3.0.2-bin-hadoop2.7
+rumble_ver=spark-rumble-1.10.0-for-spark-3.jar
 
 # Find Java
 export JAVA_HOME=`pwd`/$java_ver
@@ -19,14 +19,13 @@ export SPARK_HOME=`pwd`/$spark_ver
 export RUMBLE=`pwd`/$rumble_ver
 
 # Set-up the query
-query_path="hep-iris-benchmark-jsoniq/queries/object-based/query-${1}/query.jq"
+cd "hep-iris-benchmark-jsoniq/queries/shredded-objects/query-${1}"
 original="..\/..\/..\/data\/Run2012B_SingleMu.root"
-new="~\/hep-iris-benchmark-jsoniq\/data\/Run2012B_SingleMu-${2}.parquet"
+new="\/home\/ec2-user\/hep-iris-benchmark-jsoniq\/data\/Run2012B_SingleMu-${2}.parquet"
 IFS=
-query=$(sed "s/${original}/${new}/" ${query_path})
+query=$(sed "s/${original}/${new}/" query.jq)
 
 # Execute the query
-cd "hep-iris-benchmark-jsoniq/queries/object-based/query-${1}"
 echo `pwd`
 echo ${query} > temp.jq
 # cat temp.jq | echo 

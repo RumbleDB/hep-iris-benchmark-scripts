@@ -7,11 +7,11 @@ cd jdk1.8.0_271
 cd -
 
 # Set up Spark
-wget https://downloads.apache.org/spark/spark-3.0.1/spark-3.0.1-bin-hadoop2.7.tgz
-tar xzf spark-3.0.1-bin-hadoop2.7.tgz
+wget https://downloads.apache.org/spark/spark-3.0.2/spark-3.0.2-bin-hadoop2.7.tgz
+tar xzf spark-3.0.2-bin-hadoop2.7.tgz
 
 # Get Rumble
-wget https://github.com/RumbleDB/rumble/releases/download/v1.10.0/spark-rumble-1.10.0-for-spark-3.0.jar
+wget https://github.com/RumbleDB/rumble/releases/download/v1.10.0/spark-rumble-1.10.0-for-spark-3.jar
 
 # Get the queries and the data
 sudo yum install -y git
@@ -22,5 +22,5 @@ aws s3 cp s3://hep-adl-ethz/hep-parquet/ . --recursive --include "*.parquet"
 cd - 
 
 # Remove the downloaded artifacts
-rm -f jdk-8u271-linux-x64.tar.gz spark-3.0.1-bin-hadoop2.7.tgz 
+rm -f jdk-8u271-linux-x64.tar.gz spark-3.0.2-bin-hadoop2.7.tgz
 
