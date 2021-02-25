@@ -4,7 +4,7 @@ SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 SSH_KEY_NAME="Dan-LenovoT490"
 NUM_INSTANCES=1
-INSTANCE_TYPE="m5d.large"
+INSTANCE_TYPE="m5d.xlarge"
 DOCKERIMAGE="rumbledb/rumble:v1.8.1-spark3"
 
 # Load common functions
