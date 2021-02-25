@@ -16,6 +16,7 @@ tar xzf spark-3.0.2-bin-hadoop2.7.tgz
 # Get Rumble
 git clone https://github.com/RumbleDB/rumble.git
 cd rumble
+git checkout 64ff255e8103ebef5257006e252e04943dbeb415
 mvn clean compile assembly:single -T 4 -DskipTests
 cp target/spark-rumble-1.10.0-jar-with-dependencies.jar ..
 cd ..
