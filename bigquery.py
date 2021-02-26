@@ -64,12 +64,12 @@ for i, query_id in enumerate(sorted(df.query_id.unique())):
     label = query_id.replace('queries/query-', '')
     label = label.replace('-1', 'a').replace('-2', 'b')
     label = 'Q' + label
-    ax.plot(data_g.num_events, data_g.total_slot,
+    ax.plot(data_g.input_records_read, data_g.total_slot,
             label=label)
 
-ax.set_xlim(0.8*1000*2**0, 1000*2**14/0.8)
-ax.set_xticks([2**i*1000 for i in range(15)])
-ax.set_xticklabels(['1k', '', '4k', '', '', '32k', '', '', '256k', '', '', '2M', '', '', '16M'])
+ax.set_xlim(0.8*1000*2**0, 53446198/0.8)
+ax.set_xticks([2**i*1000 for i in range(16)] + [53446198])
+ax.set_xticklabels(['1k', '', '', '', '16k', '', '', '', '256k', '', '', '', '4M', '', '', '', '53M'])
 ax.set_ylim(0.01, 10*60)
 ax.set_yticks([0.01, 0.1, 1, 10, 60, 10*60])
 ax.set_yticklabels(['10ms', '.1s', '1s', '10s', '1m', '10m'])
