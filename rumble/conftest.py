@@ -18,8 +18,10 @@ def pytest_addoption(parser):
                      help='Number of runs per query.')
     parser.addoption('--warmup-count', action='store', default=0,
                      help='Number of runs to be used as warmup.')
-    parser.addoption('--out-file', action='store',
-                     help='The output path where the results are appended.')
+    parser.addoption('--out-file-times', action='store',
+                     help='The output path where the times are appended.')
+    parser.addoption('--out-file-std', action='store',
+                     help='The output path where the std are appended.')
     parser.addoption('--freeze-result', action='store_true',
                      help='Overwrite reference result.')
     parser.addoption('--plot-histogram', action='store_true',

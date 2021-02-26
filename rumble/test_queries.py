@@ -126,26 +126,12 @@ def test_query(query_id, pytestconfig, rumble):
     if pytestconfig.getoption('freeze_result'):
         df.to_csv(ref_file, sep=',', index=False)
 
-    # Read reference result
-    df_ref = pd.read_csv(ref_file, sep=',')
-
     # Plot histogram
     if pytestconfig.getoption('plot_histogram'):
         from matplotlib import pyplot as plt
         plt.hist(df.x, bins=len(df.index), weights=df.y)
         plt.savefig(png_file)
         plt.close()
-
-    # Normalize reference and query result
-    df = df[df.y > 0]
-    df = df[['x', 'y']]
-    df.reset_index(drop=True, inplace=True)
-    df_ref = df_ref[df_ref.y > 0]
-    df_ref = df_ref[['x', 'y']]
-    df_ref.reset_index(drop=True, inplace=True)
-
-    # Assert correct result
-    pd.testing.assert_frame_equal(df_ref, df)
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -164,8 +150,11 @@ def cleanup(request, pytestconfig):
             "query-8-1": 9,
             "query-8-2": 10
         }
-        with open(pytestconfig.getoption("out_file"), "r") as f:
-            lines = f.readlines()
+        with open(pytestconfig.getoption("out_file_times"), "r") as f:
+            lines_times = f.readlines()
+
+        with open(pytestconfig.getoption("out_file_std"), "r") as f:
+            lines_std = f.readlines()
 
         logging.info("Printing the times")
         for i in sorted(list(times.keys())):
@@ -173,12 +162,17 @@ def cleanup(request, pytestconfig):
             logging.info("(Query %s) std: %.4f", i, std_dev[i])
             
             key = i.split("/")[1]
-            lines[offsets[key]] = lines[offsets[key]][:-1] + f",{times[i]}"
+            lines_times[offsets[key]] = lines_times[offsets[key]][:-1] + f",{times[i]}\n"
+            lines_std[offsets[key]] = lines_std[offsets[key]][:-1] + f",{std_dev[i]}\n"
 
-        with open(pytestconfig.getoption("out_file"), "w") as f:
-            for line in lines:
+        with open(pytestconfig.getoption("out_file_times"), "w") as f:
+            for line in lines_times:
                 f.write(line)
 
+        with open(pytestconfig.getoption("out_file_std"), "w") as f:
+            for line in lines_std:
+                f.write(line)
+                
     request.addfinalizer(finalizer)
 
 

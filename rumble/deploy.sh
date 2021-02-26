@@ -4,7 +4,7 @@ SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 SSH_KEY_NAME="Dan-LenovoT490"
 NUM_INSTANCES=1
-INSTANCE_TYPE="m5.large"
+INSTANCE_TYPE="m5d.xlarge"
 DOCKERIMAGE="rumbledb/rumble:v1.8.1-spark3"
 
 # Load common functions
@@ -22,7 +22,8 @@ do
     (
         (
             ssh -q ec2-user@$dnsname "bash -s" < rumble_environment.sh       
-            scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ec2-user@$dnsname:~
+            scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ${SCRIPT_PATH}/execute_batch_py.sh ec2-user@$dnsname:~
+            scp ${SCRIPT_PATH}/test_queries.py ${SCRIPT_PATH}/conftest.py ec2-user@$dnsname:~/hep-iris-benchmark-jsoniq
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
     ) &
