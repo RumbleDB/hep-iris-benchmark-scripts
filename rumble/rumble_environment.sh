@@ -21,17 +21,15 @@ mvn clean compile assembly:single -T 4 -DskipTests
 cp target/spark-rumble-1.10.0-jar-with-dependencies.jar ..
 cd ..
 mv spark-rumble-1.10.0-jar-with-dependencies.jar spark-rumble-1.10.0-for-spark-3.jar
-# wget https://github.com/RumbleDB/rumble/releases/download/v1.10.0/spark-rumble-1.10.0-for-spark-3.jar
 
 
 # Get the queries and the data
 git clone https://github.com/RumbleDB/hep-iris-benchmark-jsoniq
 cd hep-iris-benchmark-jsoniq
 python3 -m pip install --user -r requirements.txt
-cd data 
-rm * 
+cd /data 
 aws s3 cp s3://hep-adl-ethz/hep-parquet/ . --recursive --include "*.parquet"
-cd ../..
+cd ~
 
 # Remove the downloaded artifacts
 rm -rf jdk-8u271-linux-x64.tar.gz spark-3.0.2-bin-hadoop2.7.tgz rumble

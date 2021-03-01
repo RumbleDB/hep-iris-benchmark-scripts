@@ -14,7 +14,8 @@ fi
 shift
 
 query_idx=(1 2 3 4 5 6-1 6-2 7 8-1 8-2)
-data_size=(150 1000 1500 2000 2500 3000 4000 8000 16000 32000 64000 100001)
+# data_size=(150 1000 1500 2000 2500 3000 4000 8000 16000 32000 64000 128000 256000 512000 1024000 2048000 4096000 8192000 16384000 32768000 65536000)
+data_size=(128000 256000 512000 1024000 2048000 4096000 8192000 16384000 32768000 65536000)
 if [[ $# -ge 1 ]]; then
 	data_size=($@)
 fi
@@ -49,7 +50,7 @@ for size in "${data_size[@]}"
 do
 	python3 hep-iris-benchmark-jsoniq/test_queries.py  \
 		--rumble-server=http://localhost:8001/jsoniq \
-		--input-path=/home/ec2-user/hep-iris-benchmark-jsoniq/data/${data_type}/Run2012B_SingleMu-${size}.parquet \
+		--input-path=/data/${data_type}/Run2012B_SingleMu-${size}.parquet \
 		-N ${size} \
 		-k "${object_type}" \
 		-vs --log-cli-level INFO \
