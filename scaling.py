@@ -26,6 +26,7 @@ ETHi = (149/255,  96/255,  19/255) # brown
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input',     help='Input JSON lines file')
 parser.add_argument('-o', '--output',    help='Output PDF file')
+parser.add_argument('-s', '--system',    help='Which system to plot')
 parser.add_argument('-l', '--no_legend', help='Suppress legend from plot',
                                          action='store_true')
 parser.add_argument('-x', '--no_xaxis',  help='Suppress x-axis from plot',
@@ -35,10 +36,10 @@ parser.add_argument('-y', '--no_yaxis',  help='Suppress y-axis from plot',
 args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
-df['total_slot'] = df.total_slot_ms / 1000
+df = df[df.system == args.system]
 
 # Average over runs
-df = df.groupby(['system', 'query_id', 'input_records_read']).median().reset_index()
+df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
@@ -61,10 +62,9 @@ styles = {
 
 for i, query_id in enumerate(sorted(df.query_id.unique())):
     data_g = df[df.query_id == query_id]
-    label = query_id.replace('queries/query-', '')
-    label = label.replace('-1', 'a').replace('-2', 'b')
+    label = query_id.replace('-1', 'a').replace('-2', 'b')
     label = 'Q' + label
-    ax.plot(data_g.input_records_read, data_g.total_slot,
+    ax.plot(data_g.num_events, data_g.running_time,
             label=label)
 
 ax.set_xlim(0.8*1000*2**0, 53446198/0.8)
