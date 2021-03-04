@@ -52,14 +52,6 @@ if not args.no_xaxis:
 ax.set_xscale('log')
 ax.set_yscale('log')
 
-prop_cycle = plt.rcParams['axes.prop_cycle']
-colors = prop_cycle.by_key()['color']
-
-styles = {
-    'rumble'   : {'color': ETHa,      'marker': 'o', 'label': 'Rumble'},
-    'bigquery' : {'color': colors[6], 'marker': 's', 'label': 'BigQuery'},
-}
-
 for i, query_id in enumerate(sorted(df.query_id.unique())):
     data_g = df[df.query_id == query_id]
     label = query_id.replace('-1', 'a').replace('-2', 'b')
