@@ -15,5 +15,6 @@ do
 done
 
 # Plot
-s=bigquery; $SOURCE_DIR/scaling.py -s $s -l    -i $SOURCE_DIR/common.json -o $SOURCE_DIR/scaling-$s.pdf
-s=rumble;   $SOURCE_DIR/scaling.py -s $s    -y -i $SOURCE_DIR/common.json -o $SOURCE_DIR/scaling-$s.pdf
+s=bigquery;          $SOURCE_DIR/scaling.py -s $s -l    -i $SOURCE_DIR/common.json -o $SOURCE_DIR/scaling-$s.pdf
+s=bigquery-external; $SOURCE_DIR/scaling.py -s $s -l -y -i $SOURCE_DIR/common.json -o $SOURCE_DIR/scaling-$s.pdf
+s=rumble;            $SOURCE_DIR/scaling.py -s $s    -y -i $SOURCE_DIR/common.json -o $SOURCE_DIR/scaling-$s.pdf
