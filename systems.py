@@ -82,7 +82,7 @@ indexes = np.arange(num_groups)
 bars = []
 for i, system in enumerate(systems):
     data_g = df[df.system == system]
-    handle = ax.bar(indexes - (i - (num_bars - 1) / 2.0) * bar_width,
+    handle = ax.bar(indexes - ((num_bars - 1) / 2.0 - i) * bar_width,
                     data_g.running_time_per_event_us, bar_width,
                     tick_label=data_g['query_label'],
                     **styles[system])
