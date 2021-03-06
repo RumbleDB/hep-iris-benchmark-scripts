@@ -72,7 +72,8 @@ styles = {
     'bigquery-external': {'color': colors[2], 'label': 'BigQuery (external)'},
 }
 
-df['query_label'] = df.query_id.apply(lambda s: 'Q' + s)
+df['query_label'] = df.query_id \
+    .apply(lambda s: 'Q' + s.replace('-1', 'a').replace('-2', 'b'))
 
 systems = sorted(df.system.unique(), key=lambda s: styles[s]['label'])
 num_bars = len(systems)
