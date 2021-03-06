@@ -15,6 +15,7 @@ df = pd.read_json(args.input, lines=True)
 # Clean up and convert to common schema
 df.num_events = df.input_records_read
 df.query_id = df.query_id.str.replace('queries/query-', '')
+df.loc[df.input_table.str.contains('_external_'), 'system'] = 'bigquery-external'
 df['running_time'] = df.total_slot_ms / 1000
 df = df[['system', 'query_id', 'num_events', 'running_time']]
 

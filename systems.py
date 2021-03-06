@@ -68,7 +68,8 @@ colors = prop_cycle.by_key()['color']
 
 styles = {
     'rumble'   : {'color': ETHa,      'label': 'Rumble'},
-    'bigquery' : {'color': colors[6], 'label': 'BigQuery'},
+    'bigquery' : {'color': colors[6], 'label': 'BigQuery (loaded)'},
+    'bigquery-external' : {'color': colors[2], 'label': 'BigQuery (external)'},
 }
 
 df['query_label'] = df.query_id.apply(lambda s: 'Q' + s)
