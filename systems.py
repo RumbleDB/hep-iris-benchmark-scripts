@@ -68,7 +68,7 @@ colors = prop_cycle.by_key()['color']
 
 styles = {
     'rumble':            {'color': ETHa,      'label': 'Rumble'},
-    'athena':            {'color': colors[0], 'label': 'Athena'},
+    'athena':            {'color': colors[0], 'label': 'Athena*'},
     'bigquery':          {'color': colors[1], 'label': 'BigQuery'},
     'bigquery-external': {'color': colors[2], 'label': 'BigQuery (external)'},
 }
