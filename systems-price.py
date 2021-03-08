@@ -70,9 +70,10 @@ colors = prop_cycle.by_key()['color']
 
 styles = {
     'rumble':            {'color': ETHa,      'label': 'Rumble'},
-    'athena':            {'color': colors[0], 'label': 'Athena*'},
-    'bigquery':          {'color': colors[1], 'label': 'BigQuery'},
-    'bigquery-external': {'color': colors[2], 'label': 'BigQuery (external)'},
+    'athena':            {'color': 'none',    'label': 'Athena (v1)*'},
+    'athena-v2':         {'color': colors[1], 'label': 'Athena (v2)*'},
+    'bigquery':          {'color': colors[2], 'label': 'BigQuery'},
+    'bigquery-external': {'color': colors[3], 'label': 'BigQuery (external)'},
 }
 
 df['query_label'] = df.query_id \
@@ -86,6 +87,8 @@ indexes = np.arange(num_groups)
 bars = []
 for i, system in enumerate(systems):
     data_g = df[df.system == system]
+    data_g = data_g.merge(
+        pd.DataFrame(df.query_id.unique(), columns=['query_id']), how='outer')
     handle = ax.bar(indexes - ((num_bars - 1) / 2.0 - i) * bar_width,
                     data_g.extrapolated_query_price, bar_width,
                     tick_label=data_g['query_label'],
