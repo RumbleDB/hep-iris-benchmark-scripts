@@ -16,6 +16,7 @@ df = pd.read_csv(args.input, header=0)
 df['system'] = 'rumble'
 df.rename({'query': 'query_id'}, inplace=True, axis='columns')
 df.query_id = df.query_id.str.replace('native-objects/query-', '')
+df['query_price'] = df.running_time / 60 / 60 * 0.226 # $0.226 per Hour
 
 # Write result
 df.to_json(args.output, orient='records', lines=True)

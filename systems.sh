@@ -16,4 +16,5 @@ do
 done
 
 # Plot
-$SOURCE_DIR/systems.py -i $SOURCE_DIR/common.json -o $SOURCE_DIR/systems.pdf
+$SOURCE_DIR/systems-cpu-time.py    -x -i $SOURCE_DIR/common.json -o $SOURCE_DIR/systems-cpu-time.pdf
+$SOURCE_DIR/systems-price.py    -l    -i $SOURCE_DIR/common.json -o $SOURCE_DIR/systems-price.pdf
