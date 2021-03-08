@@ -23,7 +23,6 @@ do
         (
             ssh -q ec2-user@$dnsname "bash -s" < rumble_environment.sh       
             scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ${SCRIPT_PATH}/execute_batch_py.sh ec2-user@$dnsname:~
-            scp ${SCRIPT_PATH}/test_queries.py ${SCRIPT_PATH}/conftest.py ec2-user@$dnsname:/data/hep-iris-benchmark-jsoniq
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
     ) &

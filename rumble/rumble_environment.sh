@@ -25,7 +25,7 @@ mv spark-rumble-1.10.0-jar-with-dependencies.jar spark-rumble-1.10.0-for-spark-3
 
 # Get the queries and the data
 cd /data 
-git clone https://github.com/RumbleDB/hep-iris-benchmark-jsoniq
+git clone https://github.com/DanGraur/hep-iris-benchmark-jsoniq.git
 cd hep-iris-benchmark-jsoniq
 python3 -m pip install --user -r requirements.txt
 cd ..
@@ -40,4 +40,3 @@ docker pull rumbledb/rumble:latest
 
 # Remove the downloaded artifacts
 rm -rf jdk-8u271-linux-x64.tar.gz spark-3.0.2-bin-hadoop2.7.tgz rumble
-
