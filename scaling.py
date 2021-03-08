@@ -45,7 +45,7 @@ fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
 if not args.no_yaxis:
-    ax.set_ylabel('Running time')
+    ax.set_ylabel('Total CPU time')
 if not args.no_xaxis:
     ax.set_xlabel('Input size [#events]')
 
