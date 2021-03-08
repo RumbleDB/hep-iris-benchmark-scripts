@@ -87,8 +87,10 @@ indexes = np.arange(num_groups)
 bars = []
 for i, system in enumerate(systems):
     data_g = df[df.system == system]
-    data_g = data_g.merge(
-        pd.DataFrame(df.query_id.unique(), columns=['query_id']), how='outer')
+    data_g = data_g \
+        .merge(pd.DataFrame(df.query_id.unique(),
+                            columns=['query_id']), how='outer') \
+        .sort_values('query_id')
     handle = ax.bar(indexes - ((num_bars - 1) / 2.0 - i) * bar_width,
                     data_g.extrapolated_query_price, bar_width,
                     tick_label=data_g['query_label'],
