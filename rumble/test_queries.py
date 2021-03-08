@@ -17,9 +17,6 @@ import pytest
 import requests
 
 
-times = {}
-std_dev = {}
-
 class RumbleProxy(ABC):
     @abstractmethod
     def run(self, query_file, variables):
@@ -107,7 +104,8 @@ def test_query(query_id, pytestconfig, rumble):
     variables['input-path'] = input_path
 
     # Run query and read result
-    local_time = []
+    for i in range(int(pytestconfig.getoption('warmup_count'))):
+        output = rumble.run(query_file, variables)
 
     for i in range(int(pytestconfig.getoption('run_count'))):
         start_timestamp = time.time()
@@ -115,12 +113,9 @@ def test_query(query_id, pytestconfig, rumble):
         end_timestamp = time.time()
         df = pd.DataFrame.from_records(output)
         running_time = end_timestamp - start_timestamp
+        with open(pytestconfig.getoption('out_file'), "a") as f:
+            f.write("{},{},{:.4f}\n".format(query_id, int(pytestconfig.getoption('num_events')), running_time))
         logging.info('Running time: {:.2f}s'.format(running_time))
-        local_time.append(running_time)
-
-    local_time = local_time[int(pytestconfig.getoption('warmup_count')):]
-    times[query_id] = np.average(local_time)
-    std_dev[query_id] = np.std(local_time)     
 
     # Freeze reference result
     if pytestconfig.getoption('freeze_result'):
@@ -132,48 +127,6 @@ def test_query(query_id, pytestconfig, rumble):
         plt.hist(df.x, bins=len(df.index), weights=df.y)
         plt.savefig(png_file)
         plt.close()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def cleanup(request, pytestconfig):
-    """ whole test run finishes. """
-    def finalizer():
-        offsets = {
-            "query-1": 1,
-            "query-2": 2,
-            "query-3": 3,
-            "query-4": 4,
-            "query-5": 5,
-            "query-6-1": 6,
-            "query-6-2": 7,
-            "query-7": 8,
-            "query-8-1": 9,
-            "query-8-2": 10
-        }
-        with open(pytestconfig.getoption("out_file_times"), "r") as f:
-            lines_times = f.readlines()
-
-        with open(pytestconfig.getoption("out_file_std"), "r") as f:
-            lines_std = f.readlines()
-
-        logging.info("Printing the times")
-        for i in sorted(list(times.keys())):
-            logging.info("(Query %s) time: %.4f", i, times[i])
-            logging.info("(Query %s) std: %.4f", i, std_dev[i])
-            
-            key = i.split("/")[1]
-            lines_times[offsets[key]] = lines_times[offsets[key]][:-1] + f",{times[i]}\n"
-            lines_std[offsets[key]] = lines_std[offsets[key]][:-1] + f",{std_dev[i]}\n"
-
-        with open(pytestconfig.getoption("out_file_times"), "w") as f:
-            for line in lines_times:
-                f.write(line)
-
-        with open(pytestconfig.getoption("out_file_std"), "w") as f:
-            for line in lines_std:
-                f.write(line)
-                
-    request.addfinalizer(finalizer)
 
 
 if __name__ == '__main__':
