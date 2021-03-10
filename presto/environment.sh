@@ -34,13 +34,21 @@ cd /data
 git clone https://github.com/DanGraur/docker-presto.git
 cd docker-presto
 sudo docker-compose up &> log.txt & 
-sleep 180
+sleep 300
 
 # Get the data; note that we're in /data/docker-presto now
 cd data 
 aws s3 cp s3://hep-adl-ethz/hep-parquet/ . --recursive --include "*.parquet"
-(cd native && for i in $(ls -C); do mv ${i} ${i}a && mkdir ${i} && mv ${i}a ${i} && mv ${i}/${i}a ${i}/${i}; done)
-(cd original && for i in $(ls -C); do mv ${i} ${i}a && mkdir ${i} && mv ${i}a ${i} && mv ${i}/${i}a ${i}/${i}; done)
+(
+	cd native && \
+	for i in 1000 2000 4000 8000 16000 32000 64000 128000; 
+	do 
+		mkdir Run2012B_SingleMu-${i}.parqueta && \
+		mv Run2012B_SingleMu-${i}.parquet Run2012B_SingleMu-${i}.parqueta/ && \
+		mv Run2012B_SingleMu-${i}.parqueta Run2012B_SingleMu-${i}.parquet
+	done
+)
+# (cd original && for i in 1000 2000 4000 8000 16000 32000 64000 128000; do mv ${i} ${i}a && mkdir ${i} && mv ${i}a ${i} && mv ${i}/${i}a ${i}/${i}; done)
 
 # Copy the data to HDFS
 sudo docker exec -it docker-presto_namenode_1 hadoop fs -mkdir /dataset
