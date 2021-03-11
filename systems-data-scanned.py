@@ -136,11 +136,12 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 styles = {
-    'rumble':            {'color': ETHa,      'label': 'Rumble'},
     'athena':            {'color': 'none',    'label': 'Athena (v1)*'},
     'athena-v2':         {'color': colors[1], 'label': 'Athena (v2)*'},
     'bigquery':          {'color': colors[2], 'label': 'BigQuery'},
     'bigquery-external': {'color': colors[3], 'label': 'BigQuery (external)'},
+    'presto':            {'color': colors[4], 'label': 'Presto'},
+    'rumble':            {'color': ETHa,      'label': 'Rumble'},
     'ideal-compr':       {'color': colors[6], 'label': 'Ideal (compressed)'},
     'ideal-uncompr':     {'color': colors[7], 'label': 'Ideal (uncompressed)'},
 }
