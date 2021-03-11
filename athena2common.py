@@ -16,9 +16,16 @@ df = pd.read_json(args.input, lines=True)
 df.query_id = df.query_id.str.replace('q', '')
 df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
 df.loc[df.work_group.fillna('').str.endswith('-v2'), 'system'] = 'athena-v2'
-df['cpu_time'] = df.running_time_ms / 1000
+
+# Interpret running time of "single-row-group" tables as CPU time
+singlerowgroup_idx = df.input_table.str.contains('_singlerowgroup_') | \
+    df.work_group.isna()  # old runs are single-row-group with different input table name
+df.loc[ singlerowgroup_idx, 'cpu_time'] = df.running_time_ms / 1000
+df.loc[~singlerowgroup_idx, 'running_time'] = df.running_time_ms / 1000
+
 df['query_price'] = df.data_scanned / 10**12 * 5 # $5.00 per TB
-df = df[['system', 'query_id', 'num_events', 'cpu_time', 'query_price', 'data_scanned']]
+df = df[['system', 'query_id', 'num_events', 'cpu_time', 'running_time',
+         'query_price', 'data_scanned']]
 
 # Write result
 df.to_json(args.output, orient='records', lines=True)

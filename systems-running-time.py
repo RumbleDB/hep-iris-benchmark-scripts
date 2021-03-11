@@ -95,6 +95,7 @@ for i, system in enumerate(systems):
                     tick_label=data_g['query_label'],
                     **styles[system])
 
+ax.set_ylim(top=600)
 ax.set_xticks(indexes)
 ax.set_yticks([.1, 1, 10, 60, 600])
 ax.set_yticklabels(['.1s', '1s', '10s', '1m', '10m'])
