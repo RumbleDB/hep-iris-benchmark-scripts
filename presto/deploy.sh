@@ -21,7 +21,7 @@ do
     (
         (
             scp -r /home/dan/data/garbage/git/iris-hep-benchmark-presto ec2-user@$dnsname:/data
-            # scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ec2-user@$dnsname:~
+            scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ec2-user@$dnsname:~
             ssh -q ec2-user@$dnsname "bash -s" < environment.sh
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."

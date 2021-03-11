@@ -2,7 +2,7 @@
 
 # Change mounting points
 sudo mkdir -p /var/lib/docker /data/docker /data/hadp
-sudo mount --bind /data/docker /var/lib/docker 
+sudo mount --bind /data/docker /var/lib/docker
 
 # Install prerequisites
 sudo yum -y update
@@ -34,7 +34,7 @@ cd /data
 git clone https://github.com/DanGraur/docker-presto.git
 cd docker-presto
 sudo docker-compose up &> log.txt & 
-sleep 300
+sleep 600  # Setting this up may take a lot of time 
 
 # Get the data; note that we're in /data/docker-presto now
 cd data 
