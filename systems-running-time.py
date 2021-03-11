@@ -35,7 +35,7 @@ parser.add_argument('-y', '--no_yaxis',  help='Suppress y-axis from plot',
 args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
-df = df[df.cpu_time.notna()]
+df = df[df.running_time.notna()]
 
 # Average over runs
 df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
@@ -47,15 +47,17 @@ df_max_size = df\
     .reset_index()
 
 df = df.merge(df_max_size, on=['system', 'query_id', 'num_events'])
-df['extrapolated_query_price'] = \
-    df.query_price / df.num_events * df.num_events.max()
+df['running_time_per_event'] = df.running_time / df.num_events
+df['running_time_per_event_us'] = df.running_time_per_event * 10**6
+df['extrapolated_running_time'] = \
+    df.running_time_per_event * df.num_events.max()
 
 # Plot
 fig = plt.figure(figsize=(5.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
 if not args.no_yaxis:
-    ax.set_ylabel('Price')
+    ax.set_ylabel('Running time')
 if not args.no_xaxis:
     ax.set_xlabel('Query')
 
@@ -65,7 +67,7 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 styles = {
-    'athena':            {'color': 'none',    'label': 'Athena (v1)*'},
+    'athena':            {'color': colors[0], 'label': 'Athena (v1)*'},
     'athena-v2':         {'color': colors[1], 'label': 'Athena (v2)*'},
     'bigquery':          {'color': colors[2], 'label': 'BigQuery'},
     'bigquery-external': {'color': colors[3], 'label': 'BigQuery (external)'},
@@ -89,13 +91,13 @@ for i, system in enumerate(systems):
                             columns=['query_id']), how='outer') \
         .sort_values('query_id')
     handle = ax.bar(indexes - ((num_bars - 1) / 2.0 - i) * bar_width,
-                    data_g.extrapolated_query_price, bar_width,
+                    data_g.extrapolated_running_time, bar_width,
                     tick_label=data_g['query_label'],
                     **styles[system])
 
 ax.set_xticks(indexes)
-ax.set_yticks([.001, .01, .1, 1, 10, 100])
-ax.set_yticklabels(['.1¢', '1¢', '10¢', '1$', '10$', '100$'])
+ax.set_yticks([.1, 1, 10, 60, 600])
+ax.set_yticklabels(['.1s', '1s', '10s', '1m', '10m'])
 
 if args.no_xaxis:
     ax.set_xticklabels([])

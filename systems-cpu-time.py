@@ -57,7 +57,7 @@ fig = plt.figure(figsize=(5.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
 if not args.no_yaxis:
-    ax.set_ylabel('Processing time per event')
+    ax.set_ylabel('CPU time per event')
 if not args.no_xaxis:
     ax.set_xlabel('Query')
 
@@ -106,7 +106,7 @@ if args.no_yaxis:
     ax.set_yticklabels([])
 
 if not args.no_legend:
-    ax.legend(loc='lower center', ncol=4, bbox_to_anchor=(0.5, 1.02))
+    ax.legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.02))
 
 plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
 plt.close()
