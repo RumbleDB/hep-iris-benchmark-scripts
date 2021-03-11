@@ -16,11 +16,11 @@ df = pd.read_json(args.input, lines=True)
 df.num_events = df.input_records_read
 df.query_id = df.query_id.str.replace('queries/query-', '')
 df.loc[df.input_table.str.contains('_external_'), 'system'] = 'bigquery-external'
-df['running_time'] = df.total_slot_ms / 1000
+df['cpu_time'] = df.total_slot_ms / 1000
 df['query_price'] = df.total_bytes_billed / 10**12 * 5 # $5.00 per TB
 df['data_scanned'] = df.total_bytes_billed
 
-df = df[['system', 'query_id', 'num_events', 'running_time', 'query_price', 'data_scanned']]
+df = df[['system', 'query_id', 'num_events', 'cpu_time', 'query_price', 'data_scanned']]
 
 # Write result
 df.to_json(args.output, orient='records', lines=True)

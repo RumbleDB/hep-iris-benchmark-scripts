@@ -35,7 +35,7 @@ parser.add_argument('-y', '--no_yaxis',  help='Suppress y-axis from plot',
 args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
-df = df[df.running_time.notna()]
+df = df[df.cpu_time.notna()]
 
 # Average over runs
 df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
@@ -47,10 +47,10 @@ df_max_size = df\
     .reset_index()
 
 df = df.merge(df_max_size, on=['system', 'query_id', 'num_events'])
-df['running_time_per_event'] = df.running_time / df.num_events
-df['running_time_per_event_us'] = df.running_time_per_event * 10**6
-df['extrapolated_running_time'] = \
-    df.running_time_per_event * df.num_events.max()
+df['cpu_time_per_event'] = df.cpu_time / df.num_events
+df['cpu_time_per_event_us'] = df.cpu_time_per_event * 10**6
+df['extrapolated_cpu_time'] = \
+    df.cpu_time_per_event * df.num_events.max()
 
 # Plot
 fig = plt.figure(figsize=(5.3, 1.8))
@@ -91,7 +91,7 @@ for i, system in enumerate(systems):
                             columns=['query_id']), how='outer') \
         .sort_values('query_id')
     handle = ax.bar(indexes - ((num_bars - 1) / 2.0 - i) * bar_width,
-                    data_g.running_time_per_event_us, bar_width,
+                    data_g.cpu_time_per_event_us, bar_width,
                     tick_label=data_g['query_label'],
                     **styles[system])
 

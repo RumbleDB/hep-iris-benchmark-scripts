@@ -35,7 +35,7 @@ parser.add_argument('-y', '--no_yaxis',  help='Suppress y-axis from plot',
 args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
-df = df[df.running_time.notna()]
+df = df[df.cpu_time.notna()]
 
 # Average over runs
 df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()

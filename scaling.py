@@ -56,7 +56,7 @@ for i, query_id in enumerate(sorted(df.query_id.unique())):
     data_g = df[df.query_id == query_id]
     label = query_id.replace('-1', 'a').replace('-2', 'b')
     label = 'Q' + label
-    ax.plot(data_g.num_events, data_g.running_time,
+    ax.plot(data_g.num_events, data_g.cpu_time,
             label=label)
 
 ax.set_xlim(0.8*1000*2**0, 53446198/0.8)
