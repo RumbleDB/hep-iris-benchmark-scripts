@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
 
-# Change mounting points
-sudo mkdir -p /var/lib/docker /data/docker /data/hadp
-sudo mount --bind /data/docker /var/lib/docker
-
 # Install prerequisites
-sudo yum -y update
-sudo yum install -y git maven htop python3 docker
-
-# Set up docker
-sudo service docker start
-sudo usermod -a -G docker ec2-user
+sudo yum install -y git maven htop python3
 
 # Get the presto client
 cd /data
@@ -33,7 +24,7 @@ python3 -m pip install --user -r requirements.txt
 cd /data
 git clone https://github.com/DanGraur/docker-presto.git
 cd docker-presto
-sudo docker-compose up &> log.txt & 
+docker-compose up &> log.txt &
 sleep 600  # Setting this up may take a lot of time 
 
 # Get the data; note that we're in /data/docker-presto now

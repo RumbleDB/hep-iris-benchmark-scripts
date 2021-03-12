@@ -102,11 +102,19 @@ function deploy_cluster {
 
                 ssh -q ec2-user@$dnsname \
                     <<-EOF
+				# Set up external disk
 				sudo mkfs -t ext4 $(readlink -f /dev/nvme1n1)
 				sudo e2label $(readlink -f /dev/nvme1n1) data
 				sudo mkdir /data
 				sudo mount /dev/nvme1n1 /data
 				sudo chown \$USER:\$USER /data
+				
+				# Set up docker
+				sudo mkdir -p /var/lib/docker /data/docker
+				sudo mount --bind /data/docker /var/lib/docker
+				sudo yum install -y docker
+				sudo service docker start
+				sudo usermod -a -G docker ec2-user
 				EOF
             ) &> "$deploy_dir/deploy_$dnsname.log"
             echo "Done deploying $dnsname."
