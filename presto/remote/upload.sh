@@ -1,38 +1,5 @@
-#!/usr/bin/env bash
-
-# Install prerequisites
-sudo yum install -y git maven htop python3
-
-# Get the presto client
-wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.248/presto-cli-0.248-executable.jar -O /data/presto.jar
-chmod +x /data/presto.jar
-
-# Install docker-compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-
-# TODO(Dan): Complete this step when the queries are public
-# cd /data
-# git clone <url>
-cd /data/iris-hep-benchmark-presto
-python3 -m pip install --user -r requirements.txt
-
-# Get the docker distribution
-cd /data
-git clone https://github.com/DanGraur/docker-presto.git
-cd docker-presto
-docker-compose up &> log.txt &
-
-# Wait until Presto is ready
-while ! /data/presto.jar --server localhost:8080 --catalog hive --schema default --execute "SELECT 42;"
-do
-    echo "Waiting for Presto to come up..."
-    sleep 5s
-done
-
-# Get the data; note that we're in /data/docker-presto now
-cd data 
+# Get the data
+cd /data/docker-presto/data
 aws s3 cp s3://hep-adl-ethz/hep-parquet/ . --recursive --include "*.parquet"
 (
 	cd native && \
