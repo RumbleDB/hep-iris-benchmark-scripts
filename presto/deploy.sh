@@ -22,7 +22,6 @@ do
         (
             scp -r "$SCRIPT_PATH/docker-presto" ec2-user@$dnsname:/data
             scp -r "$SCRIPT_PATH/queries" ec2-user@$dnsname:/data
-            scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ec2-user@$dnsname:~
             ssh -q ec2-user@$dnsname "bash -s" < "$SCRIPT_PATH"/remote/environment.sh
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
@@ -30,3 +29,8 @@ do
 done
 wait
 echo "Done deploying machines."
+
+# Set up SSH tunnel to head node
+ssh -L 8080:localhost:8080 -N -q ${dnsname[0]} &
+tunnelpid=$!
+echo "$tunnelpid" > "$deploy_dir/tunnel.pid"
