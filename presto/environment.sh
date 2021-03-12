@@ -4,10 +4,8 @@
 sudo yum install -y git maven htop python3
 
 # Get the presto client
-cd /data
-wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.248/presto-cli-0.248-executable.jar
-mv presto-cli-0.248-executable.jar presto.jar
-chmod +x presto.jar
+wget https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.248/presto-cli-0.248-executable.jar -O /data/presto.jar
+chmod +x /data/presto.jar
 
 # Install docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.28.5/docker-compose-Linux-x86_64" -o /usr/local/bin/docker-compose
@@ -25,7 +23,13 @@ cd /data
 git clone https://github.com/DanGraur/docker-presto.git
 cd docker-presto
 docker-compose up &> log.txt &
-sleep 600  # Setting this up may take a lot of time 
+
+# Wait until Presto is ready
+while ! /data/presto.jar --server localhost:8080 --catalog hive --schema default --execute "SELECT 42;"
+do
+    echo "Waiting for Presto to come up..."
+    sleep 5s
+done
 
 # Get the data; note that we're in /data/docker-presto now
 cd data 
