@@ -21,7 +21,6 @@ do
     (
         (
             scp -r "$SCRIPT_PATH/docker-presto" ec2-user@$dnsname:/data
-            scp -r "$SCRIPT_PATH/queries" ec2-user@$dnsname:/data
             ssh -q ec2-user@$dnsname "bash -s" < "$SCRIPT_PATH"/remote/environment.sh
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
