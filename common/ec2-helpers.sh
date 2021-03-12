@@ -1,5 +1,12 @@
-SSH_KEY_NAME="Dan-LenovoT490"
-INSTANCE_PROFILE="S3_READ_ACCESS"
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+if ! [ -f "$SOURCE_DIR/config.sh" ]
+then
+    echo "Config file config.sh not found." >&2
+    exit 1
+else
+    . "$SOURCE_DIR/config.sh"
+fi
 
 function discover_instanceids {
     trap 'echo "Error!"; exit 1' ERR
