@@ -40,13 +40,16 @@ function run_one {(
         "$query_cmd" -vs --log-cli-level INFO \
             --presto-cmd "$PRESTO_CMD" \
             --input-table "$input_table" \
-            --out-file /dev/null \
+            --freeze-result true \
             --num-events $num_events \
             --query-id $query_id
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
     ) 2>&1 | tee "$run_dir"/run.log
+
+    execution_id="$(cat "$run_dir/run.log" | grep -oE "Query ID: .*" | cut -f3 -d' ')"
+    wget http://localhost:8080/v1/query/$execution_id -qO - | python3 -m json.tool > "$run_dir/query.json"
 )}
 
 function run_many() {(
