@@ -1,0 +1,6 @@
+[submodule "presto/docker-presto"]
+	path = presto/docker-presto
+	url = ../docker-presto.git
+[submodule "presto/queries"]
+	path = presto/queries
+	url = ../iris-hep-benchmark-presto.git

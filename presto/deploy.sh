@@ -20,7 +20,8 @@ for dnsname in ${dnsnames[*]}
 do
     (
         (
-            scp -r /home/dan/data/garbage/git/iris-hep-benchmark-presto ec2-user@$dnsname:/data
+            scp -r "$SCRIPT_PATH/docker-presto" ec2-user@$dnsname:/data
+            scp -r "$SCRIPT_PATH/queries" ec2-user@$dnsname:/data
             scp ${SCRIPT_PATH}/execute_query.sh ${SCRIPT_PATH}/execute_batch.sh ec2-user@$dnsname:~
             ssh -q ec2-user@$dnsname "bash -s" < "$SCRIPT_PATH"/remote/environment.sh
         ) &>> "$deploy_dir/deploy_$dnsname.log"

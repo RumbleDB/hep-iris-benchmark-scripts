@@ -18,9 +18,9 @@ sudo docker exec -it docker-presto_namenode_1 hadoop fs -put /data/ /dataset/
 sudo docker exec -it docker-presto_namenode_1 hadoop fs -ls /dataset
 
 # Set up the table and the view
-/data/presto.jar --server localhost:8080 --catalog hive --schema default --file /data/iris-hep-benchmark-presto/queries/common/functions.sql
+/data/presto.jar --server localhost:8080 --catalog hive --schema default --file /data/queries/queries/common/functions.sql
 
 for i in 1000 2000 4000 8000 16000 32000 64000 128000 256000 512000 1024000 2048000 4096000 8192000 16384000 32768000 65536000
 do
-	sed "s/{i}/${i}/g" /data/iris-hep-benchmark-presto/scripts/make_db_native.sql | /data/presto.jar --server localhost:8080 --catalog hive --schema default --file /dev/stdin
+	sed "s/{i}/${i}/g" /data/queries/scripts/make_db_native.sql | /data/presto.jar --server localhost:8080 --catalog hive --schema default --file /dev/stdin
 done

@@ -13,10 +13,10 @@ echo "query,num_events,running_time" > ${times_file_name}
 # Start running the experiments
 for size in "${data_size[@]}"
 do
-	python3 /data/iris-hep-benchmark-presto/test_queries.py  \
+	python3 /data/queries/test_queries.py  \
 		-N ${size} \
 		-vs --log-cli-level INFO \
-		--presto-cmd /data/iris-hep-benchmark-presto/scripts/run_presto.sh \
+		--presto-cmd /data/queries/scripts/run_presto.sh \
 		--run-count 2 \
 		--warmup-count 1 \
 		--out-file "${times_file_name}"
