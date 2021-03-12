@@ -43,12 +43,19 @@ function deploy_cluster {
     deploy_dir="${experiments_dir}/deploy_$(date +%F-%H-%M-%S)"
     mkdir -p "$deploy_dir"
 
+    # Find image ID in this region
+    image_name="amzn2-ami-hvm-2.0.20200722.0-x86_64-gp2"
+    image_id="$(aws ec2 describe-images \
+                    --owners amazon \
+                    --filters "Name=name,Values=$image_name" "Name=state,Values=available" \
+                    --query "Images[0].ImageId" --output text)"
+
     # Start instances
     aws ec2 run-instances \
         --count $num_instances \
         --instance-type $instance_type \
         --iam-instance-profile Name="$INSTANCE_PROFILE" \
-        --image-id ami-0c115dbd34c69a004 \
+        --image-id "$image_id" \
         --key-name $SSH_KEY_NAME \
         > "$deploy_dir/run-instances.json"
 
