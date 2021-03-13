@@ -52,6 +52,8 @@ df['running_time_per_event_us'] = df.running_time_per_event * 10**6
 df['extrapolated_running_time'] = \
     df.running_time_per_event * df.num_events.max()
 
+print(df[['system', 'query_id', 'extrapolated_running_time']])
+
 # Plot
 fig = plt.figure(figsize=(5.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
