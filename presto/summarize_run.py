@@ -26,27 +26,27 @@ with open(join(run_path, 'query.json'), 'r') as f:
 # Summarize
 data = config.copy()
 
-assert stats['state'] == 'FINISHED'
-stats = stats['queryStats']
+if isinstance(stats, dict) and stats['state'] == 'FINISHED':
+    stats = stats['queryStats']
 
-# Top-level metrics
-data['elapsed_time'] =   round(parse_timespan(stats['elapsedTime']), 6)
-data['total_cpu_time'] = round(parse_timespan(stats['totalCpuTime']), 6)
-data['bytes_scanned'] = parse_size(stats['rawInputDataSize'])
-data['records_scanned'] = stats['rawInputPositions']
+    # Top-level metrics
+    data['elapsed_time'] =   round(parse_timespan(stats['elapsedTime']), 6)
+    data['total_cpu_time'] = round(parse_timespan(stats['totalCpuTime']), 6)
+    data['bytes_scanned'] = parse_size(stats['rawInputDataSize'])
+    data['records_scanned'] = stats['rawInputPositions']
 
-# Summarize exchange operators
-num_exchange = 0
-bytes_exchanged = 0
-records_exchanged = 0
-for op in stats['operatorSummaries']:
-    if op['operatorType'] == 'ExchangeOperator':
-        num_exchange += 1
-        records_exchanged += op['rawInputPositions']
-        bytes_exchanged += parse_size(op['rawInputDataSize'])
-data['num_exchange'] = num_exchange
-data['records_exchanged'] = records_exchanged
-data['bytes_exchanged'] = bytes_exchanged
+    # Summarize exchange operators
+    num_exchange = 0
+    bytes_exchanged = 0
+    records_exchanged = 0
+    for op in stats['operatorSummaries']:
+        if op['operatorType'] == 'ExchangeOperator':
+            num_exchange += 1
+            records_exchanged += op['rawInputPositions']
+            bytes_exchanged += parse_size(op['rawInputDataSize'])
+    data['num_exchange'] = num_exchange
+    data['records_exchanged'] = records_exchanged
+    data['bytes_exchanged'] = bytes_exchanged
 
 # Print result
 print(json.dumps(data))
