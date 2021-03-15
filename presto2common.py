@@ -9,18 +9,27 @@ parser.add_argument('-i', '--input',  help='Input JSON file')
 parser.add_argument('-o', '--output', help='Output JSON lines file')
 args = parser.parse_args()
 
+instance_price_per_hour = {
+    'm5d.xlarge': 0.226,
+}
+
 # Read input
 df = pd.read_json(args.input, lines=True)
 
 # Clean up and convert to common schema
 df['system'] = 'presto'
 df.num_events = df.records_scanned
+if not 'instance_type' in df:
+    df['instance_type'] = 'm5d.xlarge'
+df.loc[df.instance_type.isna()] = 'm5d.xlarge'
 df.rename({'elapsed_time': 'running_time',
            'bytes_scanned': 'data_scanned',
            'total_cpu_time': 'cpu_time'},
           inplace=True, axis='columns')
+df['instance_price_per_hour'] = \
+    df.instance_type.apply(lambda s: instance_price_per_hour[s])
 df.query_id = df.query_id.str.replace('q', '')
-df['query_price'] = df.cpu_time / 60 / 60 * 0.226 # $0.226 per Hour
+df['query_price'] = df.running_time / 60 / 60 * df.instance_price_per_hour
 
 df = df[['system', 'query_id', 'num_events', 'cpu_time', 'running_time',
          'query_price', 'data_scanned']]
