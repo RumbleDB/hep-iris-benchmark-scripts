@@ -6,12 +6,24 @@ PRESTO_CMD="$SOURCE_DIR"/queries/scripts/run_presto.sh
 INPUT_TABLE_FORMAT="hive.cern.Run2012B_SingleMu_%i"
 NUM_RUNS=3
 
+# Find instance IDs
+instanceids=($(
+    . "$SOURCE_DIR/../common/ec2-helpers.sh"
+    deploy_dir="$(discover_cluster "$SOURCE_DIR/../experiments")"
+    discover_instanceids "$deploy_dir"
+))
+
+# Find experiment directory
 experiments_dir="$SOURCE_DIR"/experiments
 query_cmd="$SOURCE_DIR"/queries/test_queries.py
 
 # Create result dir
 experiment_dir="$experiments_dir/experiment_$(date +%F-%H-%M-%S)"
 mkdir -p $experiment_dir
+
+# Store instance information
+aws ec2 describe-instances --instance-id $instanceids \
+    > "$experiment_dir/instances.json"
 
 function run_one {(
     trap 'exit 1' ERR
