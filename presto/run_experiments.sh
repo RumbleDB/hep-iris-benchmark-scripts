@@ -49,7 +49,13 @@ function run_one {(
     ) 2>&1 | tee "$run_dir"/run.log
 
     execution_id="$(cat "$run_dir/run.log" | grep -oE "Query ID: .*" | cut -f3 -d' ')"
-    wget http://localhost:8080/v1/query/$execution_id -qO - | python3 -m json.tool > "$run_dir/query.json"
+    (
+        if [[ -n "$query_id" ]]; then
+            wget http://localhost:8080/v1/query/$execution_id -qO - | python3 -m json.tool
+        else
+            echo "{}"
+        fi
+    ) > "$run_dir"/query.json
 )}
 
 function run_many() {(
