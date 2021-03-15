@@ -4,3 +4,6 @@
 [submodule "presto/queries"]
 	path = presto/queries
 	url = ../iris-hep-benchmark-presto.git
+[submodule "rumble/queries"]
+	path = rumble/queries
+	url = ../iris-hep-benchmark-rumble.git
