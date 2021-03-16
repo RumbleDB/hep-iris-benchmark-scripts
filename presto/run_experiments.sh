@@ -2,8 +2,8 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-PRESTO_CMD="$SOURCE_DIR"/queries/scripts/run_presto.sh
-INPUT_TABLE_FORMAT="hive.cern.Run2012B_SingleMu_%i"
+PRESTO_CMD="$SOURCE_DIR"/queries/scripts/presto.sh
+INPUT_TABLE_FORMAT="Run2012B_SingleMu_%i"
 NUM_RUNS=3
 
 # Find instance IDs
@@ -51,6 +51,7 @@ function run_one {(
     (
         "$query_cmd" -vs --log-cli-level INFO \
             --presto-cmd "$PRESTO_CMD" \
+            --presto-server "localhost:8080" \
             --input-table "$input_table" \
             --freeze-result true \
             --num-events $num_events \
