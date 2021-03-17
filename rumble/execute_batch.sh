@@ -35,6 +35,9 @@ function run_one {(
 		}
 		EOF
 
+    application_id=$(curl "http://localhost:4040/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
+    entries=$(curl "http://localhost:4040/api/v1/applications/${application_id}/jobs" | jq length)
+    entries_sql=$(curl "http://localhost:4040/api/v1/applications/${application_id}/sql?length=100000000" | jq length)
     (
         "$query_cmd" -vs --log-cli-level INFO \
             --freeze-result \
@@ -46,15 +49,9 @@ function run_one {(
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
     ) 2>&1 | tee "$run_dir"/run.log
-
-    # execution_id="$(cat "$run_dir/run.log" | grep -oE "Query ID: .*" | cut -f3 -d' ')"
-    # (
-    #     if [[ -n "$query_id" ]]; then
-    #         wget http://localhost:8080/v1/query/$execution_id -qO - | python3 -m json.tool
-    #     else
-    #         echo "{}"
-    #     fi
-    # ) > "$run_dir"/query.json
+    entries=$(( $(curl "http://localhost:4040/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
+    entries_sql=$(( $(curl "http://localhost:4040/api/v1/applications/${application_id}/sql?length=100000000" | jq length) - $entries_sql ))
+    python3 get_metrics.py ${application_id} ${entries} ${entries_sql} ${run_dir}
 )}
 
 function run_many() {(
@@ -75,9 +72,8 @@ function run_many() {(
     done
 )}
 
-NUM_EVENTS=($(for l in {0..3}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
-run_many NUM_EVENTS QUERY_IDS
+NUM_EVENTS=( $(for l in {0..0}; do echo $((2**$l*1000)); done) )
+QUERY_IDS=( $(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done) )
 
 # NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
 # QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
