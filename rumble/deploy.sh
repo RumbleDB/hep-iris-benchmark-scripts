@@ -29,6 +29,9 @@ wait
 echo "Done deploying machines."
 
 # Set up SSH tunnel to head node
-ssh -L 8081:localhost:8081 -N -q ${dnsname[0]} &
-tunnelpid=$!
-echo "$tunnelpid" > "$deploy_dir/tunnel.pid"
+for p in 4040 8001 18080
+do  
+	ssh -L ${p}:localhost:${p} -N -q ec2-user@${dnsname[0]} &
+	tunnelpid=$!
+	echo "$tunnelpid" >> "$deploy_dir/tunnel.pid"
+done
