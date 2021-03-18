@@ -27,6 +27,7 @@ df = pd.read_json(args.input, lines=True)
 df['system'] = 'presto'
 df.num_events = df.records_scanned
 df.loc[df.instance_type.isna(), 'instance_type'] = 'm5d.xlarge'
+df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
 df['num_cores'] = df.num_instances * df.num_cores_per_instance
 df.rename({'elapsed_time': 'running_time',
            'bytes_scanned': 'data_scanned',

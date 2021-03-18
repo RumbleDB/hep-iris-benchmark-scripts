@@ -51,10 +51,12 @@ df_max_size = df[~df.running_time.isna()] \
     .reset_index()
 
 df = df.merge(df_max_size, on=['system', 'query_id', 'num_events', 'num_cores'])
+
 df['extrapolated_query_price'] = \
     df.query_price / df.num_events * df.num_events.max()
-
 df['extrapolated_query_price_ct'] = df.extrapolated_query_price * 100
+df['extrapolated_running_time'] = \
+    df.running_time / df.num_events * df.num_events.max()
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
@@ -81,7 +83,7 @@ styles = {
 
 for i, system in enumerate(sorted(df.system.unique())):
     data_g = df[df.system == system]
-    ax.plot(data_g.extrapolated_query_price_ct, data_g.running_time,
+    ax.plot(data_g.extrapolated_query_price_ct, data_g.extrapolated_running_time,
             **styles[system])
 
 ax.set_xlim(0.1, 100)
