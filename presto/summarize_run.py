@@ -61,11 +61,23 @@ if isinstance(stats, dict) and stats['state'] == 'FINISHED':
     num_exchange = 0
     bytes_exchanged = 0
     records_exchanged = 0
+    stages = {}
     for op in stats['operatorSummaries']:
+        stage = op['stageId']
+        if stage not in stages: stages[stage] = 0
+        stages[stage] += \
+            parse_timespan(op['addInputCpu']) + \
+            parse_timespan(op['getOutputCpu']) + \
+            parse_timespan(op['finishCpu'])
+
         if op['operatorType'] == 'ExchangeOperator':
             num_exchange += 1
             records_exchanged += op['rawInputPositions']
             bytes_exchanged += parse_size(op['rawInputDataSize'])
+    data['num_stages'] = len(stages)
+    for k, v in stages.items():
+        data['stage_{}'.format(k)] = v
+
     data['num_exchange'] = num_exchange
     data['records_exchanged'] = records_exchanged
     data['bytes_exchanged'] = bytes_exchanged
