@@ -14,8 +14,9 @@ df = pd.read_csv(args.input, header=0)
 
 # Clean up and convert to common schema
 df['system'] = 'rumble'
-df.rename({'query': 'query_id', 'running_time': 'cpu_time'},
+df.rename({'query': 'query_id'},
           inplace=True, axis='columns')
+df['cpu_time'] = df.running_time
 df.query_id = df.query_id.str.replace('native-objects/query-', '')
 df['query_price'] = df.cpu_time / 60 / 60 * 0.226 # $0.226 per Hour
 
