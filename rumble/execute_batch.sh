@@ -31,7 +31,7 @@ function run_one {(
 
     tee "$run_dir/config.json" <<-EOF
 		{
-            "VM": ${instance},
+            "VM": "${instance}",
 		    "system": "rumble",
 		    "run_dir": "$(basename "$experiment_dir")/$(basename "$run_dir")",
 		    "num_events": $num_events,
