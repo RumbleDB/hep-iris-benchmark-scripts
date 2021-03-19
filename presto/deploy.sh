@@ -2,8 +2,8 @@
 
 SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-NUM_INSTANCES=1
-INSTANCE_TYPE="m5d.xlarge"
+NUM_INSTANCES="${1:-1}"
+INSTANCE_TYPE="${2:-m5d.xlarge}"
 
 # Load common functions
 . "$SCRIPT_PATH/../common/ec2-helpers.sh"
