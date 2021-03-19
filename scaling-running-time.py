@@ -38,8 +38,12 @@ args = parser.parse_args()
 df = pd.read_json(args.input, lines=True)
 df = df[df.system == args.system]
 
+df.loc[df.num_cores.isna(), 'num_cores'] = 0
+
 # Average over runs
-df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
+df = df.groupby(['system', 'query_id', 'num_events', 'num_cores']).median().reset_index()
+
+df = df[df.num_cores == df.num_cores.max()]
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
