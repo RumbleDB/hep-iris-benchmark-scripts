@@ -8,6 +8,11 @@ NUM_RUNS=3
 experiments_dir="$SOURCE_DIR"/experiments
 query_cmd="$SOURCE_DIR"/queries/test_queries.py
 
+. "$SOURCE_DIR/conf.sh"
+
+stat_port=$(( 4040 + ${offset} ))
+query_port=$(( 8001 + ${offset} ))
+
 # Create result dir
 experiment_dir="$experiments_dir/experiment_$(date +%F-%H-%M-%S)"
 mkdir -p $experiment_dir
@@ -26,6 +31,7 @@ function run_one {(
 
     tee "$run_dir/config.json" <<-EOF
 		{
+            "VM": ${instance},
 		    "system": "rumble",
 		    "run_dir": "$(basename "$experiment_dir")/$(basename "$run_dir")",
 		    "num_events": $num_events,
@@ -35,23 +41,23 @@ function run_one {(
 		}
 		EOF
 
-    application_id=$(curl "http://localhost:4040/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
-    entries=$(curl "http://localhost:4040/api/v1/applications/${application_id}/jobs" | jq length)
-    entries_sql=$(curl "http://localhost:4040/api/v1/applications/${application_id}/sql?length=100000000" | jq length)
+    application_id=$(curl "http://localhost:${stat_port}/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
+    entries=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length)
+    entries_sql=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/sql?length=100000000" | jq length)
     (
         "$query_cmd" -vs --log-cli-level INFO \
             --freeze-result \
             --input-path="$input_table" \
-			--rumble-server="http://localhost:8001/jsoniq" \
+			--rumble-server="http://localhost:${query_port}/jsoniq" \
             --num-events=$num_events \
             --query-id="$query_id"
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
     ) 2>&1 | tee "$run_dir"/run.log
-    entries=$(( $(curl "http://localhost:4040/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
-    entries_sql=$(( $(curl "http://localhost:4040/api/v1/applications/${application_id}/sql?length=100000000" | jq length) - $entries_sql ))
-    python3 get_metrics.py ${application_id} ${entries} ${entries_sql} ${run_dir}
+    entries=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
+    entries_sql=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/sql?length=100000000" | jq length) - $entries_sql ))
+    python3 get_metrics.py ${application_id} ${entries} ${entries_sql} ${run_dir} --port=${stat_port}
 )}
 
 function run_many() {(
@@ -72,15 +78,22 @@ function run_many() {(
     done
 )}
 
-NUM_EVENTS=( $(for l in {0..0}; do echo $((2**$l*1000)); done) )
-QUERY_IDS=( $(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done) )
+# Start up Spark to avoid curl errors
+run_one 1000 native-objects/query-1 0
 
-# NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
+# Run the warmups
+NUM_EVENTS=($(for l in {0..0}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
 
-# run_many NUM_EVENTS QUERY_IDS
+run_many NUM_EVENTS QUERY_IDS
 
-# NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
+# Run the actual queries
+NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
 
-# run_many NUM_EVENTS QUERY_IDS
+run_many NUM_EVENTS QUERY_IDS
+
+NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
+
+run_many NUM_EVENTS QUERY_IDS

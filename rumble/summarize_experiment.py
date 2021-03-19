@@ -12,7 +12,7 @@ SQL_JOBS = "sql_jobs.json"
 parser = argparse.ArgumentParser(description='Summarize the Rumble experiment.')
 parser.add_argument("experiment_dir", help="The experiment directory", type=str)
 
-def aggregate_experiment(path, save_file_name="metrics.json"):
+def aggregate_run(path, save_file_name="metrics.json"):
 	# Read all the statistics dumps
 	with open(os.path.join(path, CONFIG), "r") as f:
 		summary = json.load(f)
@@ -54,7 +54,8 @@ def aggregate_experiment(path, save_file_name="metrics.json"):
 
 	# Write and return 
 	with open(os.path.join(path, save_file_name), "w") as f:
-		json.dump(summary, f, indent=2)
+		json.dump(summary, f)
+		f.write("\n")
 
 	return summary
 
@@ -66,13 +67,15 @@ def main(args):
 	for subdir in [os.path.join(top_dir, o) for o in os.listdir(top_dir) 
 		if os.path.isdir(os.path.join(top_dir, o))]:
 			try:
-				summary.append(aggregate_experiment(subdir))
+				summary.append(aggregate_run(subdir))
 			except Exception as e:
 				print(f"Encountered an error at {subdir}", file=sys.stderr)
 				print(f" > Error: {e}", file=sys.stderr)
 
 	with open(os.path.join(top_dir, "summary.json"), "w") as f:
-		json.dump(summary, f, indent=2)
+		for j in summary:
+			json.dump(j, f)
+			f.write("\n")
 
 
 if __name__ == '__main__':
