@@ -2,7 +2,7 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2
+for q in 1 2 3 4 5 6-1 6-2 7 8
 do
     flags=""
     if [[ "$q" != "1" && "$q" != "5" ]]; then flags="$flags -y"; fi

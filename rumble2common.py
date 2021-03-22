@@ -17,7 +17,8 @@ df['system'] = 'rumble'
 df.rename({'query': 'query_id'},
           inplace=True, axis='columns')
 df['cpu_time'] = df.running_time
-df.query_id = df.query_id.str.replace('native-objects/query-', '')
+df.query_id = df.query_id.str.replace('native-objects/query-', '').replace('8-1', '8')
+df = df[df.query_id != '8-2']
 df['query_price'] = df.cpu_time / 60 / 60 * 0.226 # $0.226 per Hour
 
 # Write result

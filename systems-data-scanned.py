@@ -78,10 +78,7 @@ projections = {
     '7':   ['Jet.pt', 'Muon.pt', 'Electron.pt',
             'Jet.eta', 'Muon.eta', 'Electron.eta',
             'Jet.phi', 'Muon.phi', 'Electron.phi'],
-    '8-1': ['Muon.pt', 'Muon.eta', 'Muon.phi', 'Muon.mass', 'Muon.charge',
-            'Electron.pt', 'Electron.eta', 'Electron.phi', 'Electron.mass', 'Electron.charge',
-            'MET.pt', 'MET.phi'],
-    '8-2': ['Muon.pt', 'Muon.eta', 'Muon.phi', 'Muon.mass', 'Muon.charge',
+    '8':   ['Muon.pt', 'Muon.eta', 'Muon.phi', 'Muon.mass', 'Muon.charge',
             'Electron.pt', 'Electron.eta', 'Electron.phi', 'Electron.mass', 'Electron.charge',
             'MET.pt', 'MET.phi'],
 }
