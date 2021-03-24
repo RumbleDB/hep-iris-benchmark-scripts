@@ -2,7 +2,7 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-INPUT_TABLE_FORMAT="/data/native/Run2012B_SingleMu-%i.parquet"
+INPUT_TABLE_FORMAT="s3://hep-adl-ethz/hep-parquet/native/Run2012B_SingleMu-%i.parquet"
 NUM_RUNS=3
 
 experiments_dir="$SOURCE_DIR"/experiments
@@ -92,19 +92,28 @@ QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-
 
 run_many NUM_EVENTS QUERY_IDS yes
 
-# Run the benchmarks
-Run the actual queries
-NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
+# NUM_EVENTS=($(for l in {14..14}; do echo $((2**$l*1000)); done))
+# QUERY_IDS=($(for q in 4 5; do echo native-objects/query-$q; done))
 
-run_many NUM_EVENTS QUERY_IDS no
+# run_many NUM_EVENTS QUERY_IDS no
 
-NUM_EVENTS=($(for l in {12..12}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
+# NUM_EVENTS=($(for l in {15..16}; do echo $((2**$l*1000)); done))
+# QUERY_IDS=($(for q in 1 2 3; do echo native-objects/query-$q; done))
 
-run_many NUM_EVENTS QUERY_IDS no
+# run_many NUM_EVENTS QUERY_IDS no
 
-NUM_EVENTS=($(for l in {13..16}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3; do echo native-objects/query-$q; done))
+# Run the actual queries
+# NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
+# QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
 
-run_many NUM_EVENTS QUERY_IDS no
+# run_many NUM_EVENTS QUERY_IDS no
+
+# NUM_EVENTS=($(for l in {12..12}; do echo $((2**$l*1000)); done))
+# QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
+
+# run_many NUM_EVENTS QUERY_IDS no
+
+# NUM_EVENTS=($(for l in {15..16}; do echo $((2**$l*1000)); done))
+# QUERY_IDS=($(for q in 1 2 3; do echo native-objects/query-$q; done))
+
+# run_many NUM_EVENTS QUERY_IDS no
