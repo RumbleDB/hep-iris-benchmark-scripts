@@ -5,6 +5,7 @@ import matplotlib; matplotlib.use('Agg')
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from matplotlib import patches
 
 plt.rcParams.update({
     'errorbar.capsize': 2,
@@ -36,6 +37,7 @@ args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
 df = df[df.cpu_time.notna()]
+df = df[df.system != 'athena']
 
 # Average over runs
 df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
@@ -118,14 +120,20 @@ df_uncompr = pd.DataFrame(((q, sum(avg_num_repetitions[column.split('.')[0]] * 4
                           columns=['query_id', 'data_scanned_per_event'])
 df_uncompr['system'] = 'ideal-uncompr'
 
-df = pd.concat([df, df_compr, df_uncompr], sort=False)
+df_ideal = pd.concat([df_compr, df_uncompr], sort=False)
+
+df_ideal['query_label'] = df_ideal.query_id \
+    .apply(lambda s: 'Q' + s.replace('-1', 'a').replace('-2', 'b'))
+
+df['query_label'] = df.query_id \
+    .apply(lambda s: 'Q' + s.replace('-1', 'a').replace('-2', 'b'))
 
 # Plot -----------------------------------------------------------------------
 fig = plt.figure(figsize=(5.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
 if not args.no_yaxis:
-    ax.set_ylabel('Data scanned per event [byte]')
+    ax.set_ylabel('#bytes scanned per event')
 if not args.no_xaxis:
     ax.set_xlabel('Query')
 
@@ -133,18 +141,15 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 styles = {
-    'athena':            {'color': 'none',    'label': 'Athena (v1)*'},
-    'athena-v2':         {'color': colors[1], 'label': 'Athena (v2)*'},
-    'bigquery':          {'color': colors[2], 'label': 'BigQuery'},
-    'bigquery-external': {'color': colors[3], 'label': 'BigQuery (external)'},
-    'presto':            {'color': colors[4], 'label': 'Presto'},
-    'rumble':            {'color': ETHa,      'label': 'Rumble'},
-    'ideal-compr':       {'color': colors[6], 'label': 'Ideal (compressed)'},
-    'ideal-uncompr':     {'color': colors[7], 'label': 'Ideal (uncompressed)'},
+    'athena':            {'facecolor': colors[0], 'label': 'Athena (v1)*'},
+    'athena-v2':         {'facecolor': colors[1], 'label': 'Athena (v2)*'},
+    'bigquery':          {'facecolor': colors[2], 'label': 'BigQuery'},
+    'bigquery-external': {'facecolor': colors[3], 'label': 'BigQuery (external)'},
+    'presto':            {'facecolor': colors[4], 'label': 'Presto'},
+    'rumble':            {'facecolor': ETHa,      'label': 'Rumble'},
+    'ideal-compr':       {'linestyle': '-',       'label': 'Ideal (compr.)'},
+    'ideal-uncompr':     {'linestyle': ':',       'label': 'Ideal (uncompr.)'},
 }
-
-df['query_label'] = df.query_id \
-    .apply(lambda s: 'Q' + s.replace('-1', 'a').replace('-2', 'b'))
 
 systems = sorted(df.system.unique(), key=lambda s: styles[s]['label'])
 num_bars = len(systems)
@@ -162,6 +167,17 @@ for i, system in enumerate(systems):
                     data_g.data_scanned_per_event, bar_width,
                     tick_label=data_g['query_label'],
                     **styles[system])
+    bars.append(handle)
+
+for i, system in enumerate(['ideal-compr', 'ideal-uncompr']):
+    df_plot = df_ideal[df_ideal.system == system]
+    handle = ax.bar(indexes, df_plot.data_scanned_per_event,
+                    bar_width * num_bars, facecolor='none', edgecolor='black',
+                    tick_label=df_plot['query_label'],
+                    **styles[system])
+    bars.append(handle)
+
+bars = [patches.Patch(**styles['athena'])] + bars
 
 ax.set_xticks(indexes)
 ax.set_ylim(top=150)
@@ -173,7 +189,7 @@ if args.no_yaxis:
     ax.set_yticklabels([])
 
 if not args.no_legend:
-    ax.legend(loc='lower center', ncol=3, bbox_to_anchor=(0.5, 1.02))
+    ax.legend(handles=bars, loc='lower center', ncol=3, bbox_to_anchor=(0.44, 1.02))
 
 plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
 plt.close()

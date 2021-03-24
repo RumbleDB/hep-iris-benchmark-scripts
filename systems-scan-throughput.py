@@ -55,7 +55,7 @@ fig = plt.figure(figsize=(5.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
 if not args.no_yaxis:
-    ax.set_ylabel('Scan Throughput [MB/s]')
+    ax.set_ylabel('Throughput [MB/s]')
 if not args.no_xaxis:
     ax.set_xlabel('Query')
 
