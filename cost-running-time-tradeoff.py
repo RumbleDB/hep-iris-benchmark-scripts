@@ -78,7 +78,7 @@ styles = {
     'athena':            {'color': colors[0], 'marker': 'p', 'markersize': 5, 'label': 'Athena (v1)', 'markerfacecolor': 'white'},
     'athena-v2':         {'color': colors[1], 'marker': '*', 'markersize': 7, 'label': 'Athena (v2)'},
     'bigquery':          {'color': colors[2], 'marker': '^', 'markersize': 5, 'label': 'BigQuery'},
-    'bigquery-external': {'color': colors[3], 'marker': 'v', 'markersize': 5, 'label': 'BigQuery (external)'},
+    'bigquery-external': {'color': colors[3], 'marker': 'v', 'markersize': 5, 'label': 'BigQuery\n(external)'},
     'presto':            {'color': colors[4], 'marker': 'o', 'markersize': 3, 'label': 'Presto', 'zorder': 0},
     'rumble':            {'color': ETHa,      'marker': 'x', 'markersize': 3, 'label': 'Rumble'},
 }
