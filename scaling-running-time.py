@@ -77,7 +77,7 @@ if args.no_yaxis:
     ax.set_yticklabels([])
 
 if not args.no_legend:
-    ax.legend(loc='center left', bbox_to_anchor=(1.02, 0.5))
+    ax.legend(loc='center left', ncol=2, bbox_to_anchor=(1.25, 0.5))
 
 plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
 plt.close()
