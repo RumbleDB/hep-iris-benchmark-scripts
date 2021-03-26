@@ -108,13 +108,14 @@ function deploy_cluster {
                 done
 
                 ssh -q ec2-user@$dnsname \
-                    <<-EOF
+                    <<-'EOF'
 				# Set up external disk
-				sudo mkfs -t ext4 $(readlink -f /dev/nvme1n1)
-				sudo e2label $(readlink -f /dev/nvme1n1) data
+				devices="$(sudo lsblk | sed -n 's~^\(nvme[^0][^ ]*\).*$~/dev/\1~p')"
+				sudo mdadm --create --verbose /dev/md0 --level=0 --name=data --raid-devices=$(echo "$devices" | wc -l) --force $devices
+				sudo mkfs.ext4 -L data /dev/md0
 				sudo mkdir /data
-				sudo mount /dev/nvme1n1 /data
-				sudo chown \$USER:\$USER /data
+				sudo mount LABEL=data /data
+				sudo chown $USER:$USER /data
 				
 				# Set up docker
 				sudo mkdir -p /var/lib/docker /data/docker
