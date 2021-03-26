@@ -46,6 +46,7 @@ data['num_cores_per_instance'] = num_cores_per_instance
 # Parse run.log
 last_running_time = None
 last_io_stats = None
+last_cpu_stats = None
 current_iteration_num = 0
 with open(join(run_path, 'run.log'), 'r') as f:
     for line in f.readlines():
@@ -65,6 +66,18 @@ with open(join(run_path, 'run.log'), 'r') as f:
                 'io_time': io_time,
             }
 
+        elif len(parts) == 52:
+            cpu_stats = {
+                'minflt':  int(parts[9]),
+                'cminflt': int(parts[10]),
+                'majflt':  int(parts[11]),
+                'cmajflt': int(parts[12]),
+                'utime':   int(parts[13]),
+                'stime':   int(parts[14]),
+                'cutime':  int(parts[15]),
+                'cstime':  int(parts[16]),
+            }
+
             # If we read a running time previously, we can report the diff to
             # the last diskstats
             if last_running_time:
@@ -73,12 +86,17 @@ with open(join(run_path, 'run.log'), 'r') as f:
                 d['iteration_num'] = current_iteration_num
                 for metric in last_io_stats.keys():
                     d[metric] = io_stats[metric] - last_io_stats[metric]
+                for metric in last_cpu_stats.keys():
+                    d[metric] = cpu_stats[metric] - last_cpu_stats[metric]
                 print(json.dumps(d))
                 current_iteration_num += 1
 
             # Remember diskstats for next iteration
             last_running_time = None
             last_io_stats = io_stats
+            last_cpu_stats = cpu_stats
+        elif len(parts) == 2 and parts[0] == 'CLK_TCK:':
+            data['clk_tck'] = int(parts[1])
 
         # Try parsing the running time and record it
         m = re.match('^([0-9]+\.[0-9]+) s$', line)

@@ -31,8 +31,14 @@ fi
 root -b -l <<EOF
 try {
         .L $macro_path
+        std::cout << "CLK_TCK: "; std::flush(std::cout);
+        system("getconf CLK_TCK");
+        pid_t pid = getpid();
+        char stat_cmd[32];
+        sprintf(stat_cmd, "cat /proc/%i/stat", pid);
         for (auto i = 0; i < $n; ++i) {
                 system("cat /proc/diskstats");
+                system(stat_cmd);
                 auto start = std::chrono::steady_clock::now();
                 $macro_call;
                 auto stop = std::chrono::steady_clock::now();
@@ -40,6 +46,7 @@ try {
                 std::cout << interval.count() << " s" << std::endl;
         }
         system("cat /proc/diskstats");
+        system(stat_cmd);
 } catch (...) {
         exit(1);
 }
