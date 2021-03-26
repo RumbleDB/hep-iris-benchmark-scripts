@@ -12,7 +12,10 @@ dnsnames=($(discover_dnsnames "$deploy_dir"))
 
 # Run query
 dnsname=${dnsnames[0]}
+echo 3 | ssh -q ec2-user@$dnsname sudo tee /proc/sys/vm/drop_caches > /dev/null
 ssh -q ec2-user@$dnsname \
-    docker run --rm -v /data/input/:/data/:ro \
+    docker run --rm \
+        -v /data/input/:/data/:ro \
+        -v /data/run_benchmark.sh:/root/util/run_benchmark.sh:ro \
         masonproffitt/rdataframe-benchmarks:0.0 \
             /root/util/run_benchmark.sh "$@"

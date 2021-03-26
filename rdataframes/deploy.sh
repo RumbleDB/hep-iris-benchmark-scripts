@@ -19,6 +19,8 @@ for dnsname in ${dnsnames[*]}
 do
     (
         (
+            scp -q "$SCRIPT_PATH/remote/run_benchmark.sh" ec2-user@$dnsname:/data
+            ssh -q ec2-user@$dnsname mkdir /data/input
             ssh -q ec2-user@$dnsname \
                 docker pull masonproffitt/rdataframe-benchmarks:0.0
         ) &>> "$deploy_dir/deploy_$dnsname.log"
