@@ -80,6 +80,7 @@ styles = {
     'bigquery':          {'color': colors[2], 'marker': '^', 'markersize': 5, 'label': 'BigQuery'},
     'bigquery-external': {'color': colors[3], 'marker': 'v', 'markersize': 5, 'label': 'BigQuery\n(external)'},
     'presto':            {'color': colors[4], 'marker': 'o', 'markersize': 3, 'label': 'Presto', 'zorder': 0},
+    'rdataframes':       {'color': colors[5], 'marker': 's', 'markersize': 3, 'label': 'RDataFrames'},
     'rumble':            {'color': ETHa,      'marker': 'x', 'markersize': 3, 'label': 'Rumble'},
 }
 
@@ -88,9 +89,9 @@ for i, system in enumerate(sorted(df.system.unique())):
     ax.plot(data_g.extrapolated_query_price_ct, data_g.extrapolated_running_time,
             **styles[system])
 
-ax.set_xlim(0.1, 100)
+ax.set_xlim(0.035, 100)
 ax.set_xticks([0.1, 1, 10, 100])
-ax.set_xticklabels(['0.1¢', '1¢', '10¢', '1$'])
+ax.set_xticklabels(['.1¢', '1¢', '10¢', '1$'])
 ax.set_ylim(0.1, 60*60)
 ax.set_yticks([0.1, 1, 10, 60, 10*60, 60*60])
 ax.set_yticklabels(['.1s', '1s', '10s', '1m', '10m', '1h'])
