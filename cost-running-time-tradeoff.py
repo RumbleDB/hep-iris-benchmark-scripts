@@ -86,6 +86,7 @@ styles = {
 
 for i, system in enumerate(sorted(df.system.unique())):
     data_g = df[df.system == system]
+    print(data_g)
     ax.plot(data_g.extrapolated_query_price_ct, data_g.extrapolated_running_time,
             **styles[system])
 

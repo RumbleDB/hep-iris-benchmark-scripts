@@ -183,6 +183,13 @@ for i, system in enumerate(systems):
                     **styles[system])
     bars.append(handle)
 
+    if system == 'rumble':
+        for j, t in enumerate(data_g.itertuples()):
+            if t.data_scanned_per_event > 150:
+                ax.text(j - ((num_bars - 1) / 2.0 - i) * bar_width,
+                        152, '{:.0f}'.format(t.data_scanned_per_event),
+                        ha='center')
+
 for i, system in enumerate(['ideal-compr', 'ideal-uncompr']):
     df_plot = df_ideal[df_ideal.system == system]
     handle = ax.bar(indexes, df_plot.data_scanned_per_event,
@@ -203,7 +210,7 @@ if args.no_yaxis:
     ax.set_yticklabels([])
 
 if not args.no_legend:
-    ax.legend(handles=bars, loc='lower center', ncol=3, bbox_to_anchor=(0.44, 1.02))
+    ax.legend(handles=bars, loc='lower center', ncol=3, bbox_to_anchor=(0.44, 1.05))
 
 plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
 plt.close()
