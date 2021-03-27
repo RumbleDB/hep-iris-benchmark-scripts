@@ -36,19 +36,32 @@ parser.add_argument('-y', '--no_yaxis',  help='Suppress y-axis from plot',
 args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
+
 df = df[df.cpu_time.notna()]
+df = df[df.query_id != '6']
 df = df[df.system != 'athena']
+df.loc[df.num_cores.isna(), 'num_cores'] = 0
 
 # Average over runs
-df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
+df = df.groupby(['system', 'num_cores', 'query_id', 'num_events']).median().reset_index()
 
 # Extrapolate to full data set
-df_max_size = df\
-    .groupby(['system', 'query_id']) \
+df_max_data = df\
+    .groupby(['system', 'num_cores', 'query_id']) \
     .agg({'num_events': 'max'}) \
     .reset_index()
+df = df.merge(df_max_data, on=['system', 'num_cores', 'query_id', 'num_events'])
 
-df = df.merge(df_max_size, on=['system', 'query_id', 'num_events'])
+# Use best configuration for RDataFrames
+df = df[(df.system != 'rdataframes') | (df.num_cores == 24)]
+
+# Use largest configurations for everything else
+df_max_cluster = df\
+    .groupby(['system', 'query_id']) \
+    .agg({'num_cores': 'max'}) \
+    .reset_index()
+df = df.merge(df_max_cluster, on=['system', 'num_cores', 'query_id'])
+
 df['data_scanned_per_event'] = df.data_scanned / df.num_events
 
 # Ideal numbers ---------------------------------------------------------------
@@ -146,6 +159,7 @@ styles = {
     'bigquery':          {'facecolor': colors[2], 'label': 'BigQuery'},
     'bigquery-external': {'facecolor': colors[3], 'label': 'BigQuery (external)'},
     'presto':            {'facecolor': colors[4], 'label': 'Presto'},
+    'rdataframes':       {'facecolor': colors[5], 'label': 'RDataFrames'},
     'rumble':            {'facecolor': ETHa,      'label': 'Rumble'},
     'ideal-compr':       {'linestyle': '-',       'label': 'Ideal (compr.)'},
     'ideal-uncompr':     {'linestyle': ':',       'label': 'Ideal (uncompr.)'},

@@ -33,13 +33,25 @@ df = pd.read_json(args.input, lines=True, dtype=False)
 
 # Clean up and convert to common schema
 df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
+df.query_id = df.query_id.str.replace('a', '-1').str.replace('b', '-2')
 df['num_cores'] = df.num_instances * df.num_cores_per_instance
 df['instance_price_per_hour'] = \
     df.instance_type.apply(lambda s: instance_price_per_hour[s])
 df['query_price'] = df.running_time / 60 / 60 * df.instance_price_per_hour
+df['data_scanned'] = df.num_sectors_read * 512
+df['cpu_time'] = (df.utime + df.stime) / df.clk_tck
 
-df = df[['system', 'query_id', 'num_events', 'running_time',
-         'query_price', 'num_cores']]
+# Use IO stats of first (non-cached) iteration for all iterations
+df_io = df \
+    .groupby(['run_dir']) \
+    .aggregate({'data_scanned': 'max'}) \
+    .reset_index() \
+    .rename({'data_scanned': 'data_scanned_max'}, axis='columns')
+df = df.merge(df_io, on=['run_dir'])
+df.data_scanned = df.data_scanned_max
+
+df = df[['system', 'query_id', 'num_events', 'cpu_time', 'running_time',
+         'query_price', 'data_scanned', 'num_cores']]
 
 # Write result
 df.to_json(args.output, orient='records', lines=True)

@@ -38,8 +38,16 @@ args = parser.parse_args()
 df = pd.read_json(args.input, lines=True)
 df = df[df.system == args.system]
 
+df.loc[df.num_cores.isna(), 'num_cores'] = 0
+
 # Average over runs
-df = df.groupby(['system', 'query_id', 'num_events']).median().reset_index()
+df = df.groupby(['system', 'query_id', 'num_events', 'num_cores']).median().reset_index()
+
+# Use best configuration for RDataFrames
+df = df[(df.system != 'rdataframes') | (df.num_cores == 24)]
+
+# Use largest configurations for everything else
+df = df[df.num_cores == df.num_cores.max()]
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
@@ -73,7 +81,7 @@ if args.no_yaxis:
     ax.set_yticklabels([])
 
 if not args.no_legend:
-    ax.legend(loc='center left', bbox_to_anchor=(1.02, 0.5))
+    ax.legend(loc='center left', ncol=2, bbox_to_anchor=(1.25, 0.5))
 
 plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
 plt.close()

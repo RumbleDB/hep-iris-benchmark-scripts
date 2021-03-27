@@ -43,6 +43,10 @@ df.loc[df.num_cores.isna(), 'num_cores'] = 0
 # Average over runs
 df = df.groupby(['system', 'query_id', 'num_events', 'num_cores']).median().reset_index()
 
+# Use best configuration for RDataFrames
+df = df[(df.system != 'rdataframes') | (df.num_cores == 24)]
+
+# Use largest configurations for everything else
 df = df[df.num_cores == df.num_cores.max()]
 
 fig = plt.figure(figsize=(2.3, 1.8))
