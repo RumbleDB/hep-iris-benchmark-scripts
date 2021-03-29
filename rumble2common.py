@@ -35,7 +35,7 @@ emr_price_per_hour = {
 # Clean up and convert to common schema
 df.rename({'runtime': 'running_time',
            'inputRecors': 'num_events',
-           'inputBytes': 'data_scanned'},
+           'maxInputRecordsBytes': 'data_scanned'},
           inplace=True, axis='columns')
 df.VM.fillna('m5d.xlarge', inplace=True)
 df.query_id = df.query_id.str.replace('native-objects/query-', '').replace('8-1', '8')
