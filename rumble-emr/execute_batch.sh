@@ -6,11 +6,11 @@ INPUT_TABLE_FORMAT="s3://hep-adl-ethz/hep-parquet/native/Run2012B_SingleMu-%i.pa
 NUM_RUNS=3
 
 experiments_dir="$SOURCE_DIR"/experiments
-query_cmd="$SOURCE_DIR"/queries/test_queries.py
+query_cmd="$SOURCE_DIR"/python/test_queries.py
 
 . "$SOURCE_DIR/conf.sh"
 
-stat_port=$(( 4040 + ${offset} ))
+stat_port=$(( 18080 + ${offset} ))
 query_port=$(( 8001 + ${offset} ))
 
 # Create result dir
@@ -44,7 +44,6 @@ function run_one {(
 
 	application_id=$(curl "http://localhost:${stat_port}/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
 	entries=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length)
-	entries_sql=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/sql?length=100000000" | jq length)
 	(
 		"$query_cmd" -vs --log-cli-level INFO \
 			--freeze-result \
@@ -57,10 +56,9 @@ function run_one {(
 		echo $exit_code > "$run_dir"/exit_code.log
 	) 2>&1 | tee "$run_dir"/run.log
 	entries=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
-	entries_sql=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/sql?length=100000000" | jq length) - $entries_sql ))
 
 	if [ "$warmup" != "yes" ]; then
-		python3 get_metrics.py ${application_id} ${entries} ${entries_sql} ${run_dir} --port=${stat_port}
+		python3 get_metrics.py ${application_id} ${entries} 0 ${run_dir} --port=${stat_port}
 	fi
 )}
 
@@ -92,28 +90,14 @@ QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-
 
 run_many NUM_EVENTS QUERY_IDS yes
 
-# NUM_EVENTS=($(for l in {14..14}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 4 5; do echo native-objects/query-$q; done))
-
-# run_many NUM_EVENTS QUERY_IDS no
-
-# NUM_EVENTS=($(for l in {15..16}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3; do echo native-objects/query-$q; done))
-
-# run_many NUM_EVENTS QUERY_IDS no
-
 # Run the actual queries
-# NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
+NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
 
-# run_many NUM_EVENTS QUERY_IDS no
+run_many NUM_EVENTS QUERY_IDS no
 
-# NUM_EVENTS=($(for l in {12..12}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
+# Discard queries 6
+NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
 
-# run_many NUM_EVENTS QUERY_IDS no
-
-# NUM_EVENTS=($(for l in {15..16}; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3; do echo native-objects/query-$q; done))
-
-# run_many NUM_EVENTS QUERY_IDS no
+run_many NUM_EVENTS QUERY_IDS no
