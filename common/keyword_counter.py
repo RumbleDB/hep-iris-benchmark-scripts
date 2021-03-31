@@ -3,6 +3,7 @@ import json
 import pandas
 from pathlib import Path
 import re
+import sys
 
 
 # Set up the input parameters
@@ -11,7 +12,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('path', help='Path to the queries.')
 parser.add_argument('--extension', type=str, default="jq",
-                    help='The extension of the query files')
+                    help="The extension of the query files. Can be 'jq', 'sql', 'C'")
 parser.add_argument('--csv', action="store_true")
 args = parser.parse_args()
 
@@ -30,7 +31,7 @@ if args.extension == "jq":
     "EXISTS": 0,
     "EMPTY": 0
   }
-else:
+elif args.extension == "sql":
   dict_counter = {
     "SELECT": 0,
     "CAST": 0,
@@ -50,6 +51,7 @@ else:
     "CREATE": 0,
     "COALESCE": 0,
     "TRANSFORM": 0,
+    "ARRAY_UNION": 0,
     "UNNEST": 0,
     "FUNCTION": 0,
     "LIMIT": 0,
@@ -59,6 +61,27 @@ else:
     "MIN_BY": 0,
     "ARRAY_MAX": 0,
     "SUM": 0 
+  }
+else:
+  dict_counter = {
+    "RETURN": 0,  # These are proxies for functions
+    "FOR": 0,
+    "IF": 0,
+    "FILTER": 0,
+    "DEFINE": 0,
+    "VECOPS": 0,
+    "CONCATENATE": 0,
+    "ARGMIN": 0,
+    "REVERSE": 0,
+    "HISTO1D": 0,
+    "PUSH_BACK": 0,
+    "EMPLACE_BACK": 0,
+    "COMBINATIONS": 0,
+    "ENABLEIMPLICITMT": 0,
+    "SUM": 0,
+    "MAP": 0,
+    "MAX": 0,
+    "TAKE": 0
   }
 
 
