@@ -7,3 +7,6 @@
 [submodule "rumble/queries"]
 	path = rumble/queries
 	url = ../iris-hep-benchmark-rumble.git
+[submodule "athena/queries"]
+	path = athena/queries
+	url = ../iris-hep-benchmark-athena.git
