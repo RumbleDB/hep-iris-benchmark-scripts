@@ -10,3 +10,6 @@
 [submodule "athena/queries"]
 	path = athena/queries
 	url = ../iris-hep-benchmark-athena.git
+[submodule "bigquery/queries"]
+	path = bigquery/queries
+	url = ../iris-hep-benchmark-bigquery.git
