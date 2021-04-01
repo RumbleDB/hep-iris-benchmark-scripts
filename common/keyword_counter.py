@@ -14,6 +14,7 @@ parser.add_argument('path', help='Path to the queries.')
 parser.add_argument('--extension', type=str, default="jq",
                     help="The extension of the query files. Can be 'jq', 'sql', 'C'")
 parser.add_argument('--csv', action="store_true")
+parser.add_argument('--avg-clauses', action="store_true")
 args = parser.parse_args()
 
 
@@ -85,6 +86,23 @@ else:
   }
 
 
+def line_metrics(lines, metrics):
+  for line in lines:
+    if line.strip() != "":
+      metrics["lines"] += 1
+
+      tokens = line.split()
+      for token in tokens:
+        metrics["characters"] += len(token)
+        split_tokens = re.split("[^A-Z]", token.upper())
+        for split_token in split_tokens:
+          if split_token in metrics["tokens"]:
+            metrics["tokens"][split_token] += 1
+
+  metrics["unique_clauses"] = sum([1 for _, v in metrics["tokens"].items() if v > 0])
+  metrics["total_clauses"] = sum(metrics["tokens"].values())
+  return metrics
+
 # Parse a query
 def eval_query(path):
   metrics = {
@@ -98,28 +116,21 @@ def eval_query(path):
   }
 
   with open(path, "r") as f:
-    for line in f.readlines():
-      if line.strip() != "":
-        metrics["lines"] += 1
+    lines = f.readlines()
 
-        tokens = line.split()
-        for token in tokens:
-          metrics["characters"] += len(token)
-          split_tokens = re.split("[^A-Z]", token.upper())
-          for split_token in split_tokens:
-            if split_token in metrics["tokens"]:
-              metrics["tokens"][split_token] += 1
-
-  metrics["unique_clauses"] = sum([1 for _, v in metrics["tokens"].items() if v > 0])
-  metrics["total_clauses"] = sum(metrics["tokens"].values())
-
-  return metrics
+  line_metrics(lines, metrics)
+  return metrics, lines
 
 
 def main():
+  lines = []
   summary = []
+  concatenated = ""
+
   for path in Path(args.path).rglob(f'*.{args.extension}'):
-    summary.append(eval_query(path))
+    result = eval_query(path)
+    summary.append(result[0])
+    lines.extend(result[1])
 
   with open("summary.json", "w") as f:
     for j in summary:
@@ -128,6 +139,20 @@ def main():
 
   if args.csv:
     pandas.json_normalize(summary).to_csv("summary.csv")
+
+  if args.avg_clauses:
+    metrics = line_metrics(
+      lines,
+      {
+        "type": args.extension,
+        "name": "all",
+        "lines": 0,
+        "characters": 0,
+        "unique_clauses": 0,
+        "total_clauses": 0,
+        "tokens": dict_counter.copy()
+      })
+    print("Unique Clauses:", metrics["unique_clauses"])
 
 
 if __name__ == '__main__':
