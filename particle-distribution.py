@@ -77,7 +77,7 @@ df['fraction_electrons'] = df.electrons / total_num_events * 100
 df['fraction_jets'] = df.jets / total_num_events * 100
 df['fraction_muons'] = df.muons / total_num_events * 100
 
-fig = plt.figure(figsize=(2.3, 1.8))
+fig = plt.figure(figsize=(3.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
 ax.set_xscale('log')
