@@ -72,6 +72,6 @@ function run_many() {(
 )}
 
 NUM_EVENTS=($(for l in {0..16}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo q$q; done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS
