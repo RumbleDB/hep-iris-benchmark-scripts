@@ -86,18 +86,18 @@ run_one 1000 native-objects/query-1 0 yes
 
 # Run the warmups
 NUM_EVENTS=($(for l in {0..0}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo native-objects/query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS yes
 
 # Run the actual queries
 NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8-1 8-2; do echo native-objects/query-$q; done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo native-objects/query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS no
 
 # Discard queries 6
 NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 7 8-1 8-2; do echo native-objects/query-$q; done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS no
