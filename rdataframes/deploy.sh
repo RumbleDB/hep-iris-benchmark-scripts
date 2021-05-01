@@ -20,9 +20,10 @@ do
     (
         (
             scp -q "$SCRIPT_PATH/remote/run_benchmark.sh" ec2-user@$dnsname:/data
+            scp -qr "$SCRIPT_PATH/queries" ec2-user@$dnsname:/data/opendata-benchmarks
             ssh -q ec2-user@$dnsname mkdir /data/input
             ssh -q ec2-user@$dnsname \
-                docker pull masonproffitt/rdataframe-benchmarks:0.0
+                docker build /data/opendata-benchmarks -t opendata-benchmarks
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
     ) &

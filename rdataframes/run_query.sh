@@ -17,5 +17,5 @@ ssh -q ec2-user@$dnsname \
     docker run --rm \
         -v /data/input/:/data/:ro \
         -v /data/run_benchmark.sh:/root/util/run_benchmark.sh:ro \
-        masonproffitt/rdataframe-benchmarks:0.0 \
+        opendata-benchmarks \
             /root/util/run_benchmark.sh "$@"

@@ -13,3 +13,6 @@
 [submodule "bigquery/queries"]
 	path = bigquery/queries
 	url = ../iris-hep-benchmark-bigquery.git
+[submodule "rdataframes/queries"]
+	path = rdataframes/queries
+	url = git@github.com:masonproffitt/opendata-benchmarks.git
