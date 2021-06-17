@@ -16,6 +16,9 @@
 [submodule "rdataframes/queries"]
 	path = rdataframes/queries
 	url = git@github.com:masonproffitt/opendata-benchmarks.git
+[submodule "asterixdb-sqlpp/queries"]
+	path = asterixdb-sqlpp/queries
+	url = ../iris-hep-benchmark-sqlpp.git
 [submodule "postgresql/queries"]
 	path = postgresql/queries
 	url = ../iris-hep-benchmark-postgresql.git
