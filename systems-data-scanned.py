@@ -154,8 +154,9 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 styles = {
+    'asterixdb':         {'facecolor': colors[1], 'label': 'AsterixDB'},
     'athena':            {'facecolor': colors[0], 'label': 'Athena (v1)*'},
-    'athena-v2':         {'facecolor': colors[1], 'label': 'Athena (v2)*'},
+    'athena-v2':         {'facecolor': colors[6], 'label': 'Athena (v2)*'},
     'bigquery':          {'facecolor': colors[2], 'label': 'BigQuery'},
     'bigquery-external': {'facecolor': colors[3], 'label': 'BigQuery (external)'},
     'presto':            {'facecolor': colors[4], 'label': 'Presto'},
@@ -181,7 +182,6 @@ for i, system in enumerate(systems):
                     data_g.data_scanned_per_event, bar_width,
                     tick_label=data_g['query_label'],
                     **styles[system])
-    bars.append(handle)
 
     if system == 'rumble':
         for j, t in enumerate(data_g.itertuples()):
@@ -190,6 +190,10 @@ for i, system in enumerate(systems):
                         152, '{:.0f}'.format(t.data_scanned_per_event),
                         ha='center')
 
+for system in sorted(styles.keys(), key=lambda s: styles[s]['label']):
+    if system.startswith('ideal-'): continue
+    bars.append(patches.Patch(**styles[system]))
+
 for i, system in enumerate(['ideal-compr', 'ideal-uncompr']):
     df_plot = df_ideal[df_ideal.system == system]
     handle = ax.bar(indexes, df_plot.data_scanned_per_event,
@@ -197,8 +201,6 @@ for i, system in enumerate(['ideal-compr', 'ideal-uncompr']):
                     tick_label=df_plot['query_label'],
                     **styles[system])
     bars.append(handle)
-
-bars = [patches.Patch(**styles['athena'])] + bars
 
 ax.set_xticks(indexes)
 ax.set_ylim(top=150)

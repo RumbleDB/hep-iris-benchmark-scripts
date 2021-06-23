@@ -46,7 +46,10 @@ df.loc[df.num_cores.isna(), 'num_cores'] = 0
 df = df.groupby(['query_id', 'num_events', 'num_cores']).median().reset_index()
 
 # Use largest configuration
-df = df[df.num_cores == df.num_cores.max()]
+if args.system == 'asterixdb':
+    df = df[df.num_cores == 8]
+else:
+    df = df[df.num_cores == df.num_cores.max()]
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)

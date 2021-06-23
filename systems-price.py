@@ -79,8 +79,9 @@ prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
 
 styles = {
+    'asterixdb':         {'color': colors[1], 'label': 'AsterixDB'},
     'athena':            {'color': 'none',    'label': 'Athena (v1)*'},
-    'athena-v2':         {'color': colors[1], 'label': 'Athena (v2)*'},
+    'athena-v2':         {'color': colors[6], 'label': 'Athena (v2)*'},
     'bigquery':          {'color': colors[2], 'label': 'BigQuery'},
     'bigquery-external': {'color': colors[3], 'label': 'BigQuery (external)'},
     'presto':            {'color': colors[4], 'label': 'Presto'},
