@@ -16,3 +16,6 @@
 [submodule "rdataframes/queries"]
 	path = rdataframes/queries
 	url = git@github.com:masonproffitt/opendata-benchmarks.git
+[submodule "postgresql/queries"]
+	path = postgresql/queries
+	url = ../iris-hep-benchmark-postgresql.git
