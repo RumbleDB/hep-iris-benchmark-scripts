@@ -89,12 +89,14 @@ function run_many() {(
     done
 )}
 
+NSF1=53446198
+
 NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS
 
-NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
+NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {0..4}; do echo $((2**$l*$NSF1)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS
