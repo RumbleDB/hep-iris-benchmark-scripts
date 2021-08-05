@@ -68,6 +68,7 @@ styles = {
     'typed_json_s3':        {'color': colors[5], 'idx': 5, 'label': 'JSON/S3 (typed)'},
     'untyped_json_s3':      {'color': colors[6], 'idx': 6, 'label': 'JSON/S3 (untyped)'},
     'untyped_parquet_hdfs': {'color': colors[7], 'idx': 2, 'label': 'Parquet/HDFS (untyped)'},
+    'untyped_parquet_s3':   {'color': colors[8], 'idx': 2, 'label': 'Parquet/S3 (untyped)'},
 }
 
 df['query_label'] = df.query_id \
