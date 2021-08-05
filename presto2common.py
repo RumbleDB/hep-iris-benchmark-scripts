@@ -35,7 +35,10 @@ df.rename({'elapsed_time': 'running_time',
           inplace=True, axis='columns')
 df['instance_price_per_hour'] = \
     df.instance_type.apply(lambda s: instance_price_per_hour[s])
-df.query_id = df.query_id.str.replace('q', '').replace('8-1', '8')
+df.query_id = df.query_id \
+    .str.replace('query-', '') \
+    .str.replace('q', '') \
+    .str.replace('8-1', '8')
 df = df[df.query_id != '8-2']
 df['query_price'] = df.running_time / 60 / 60 * df.instance_price_per_hour
 
