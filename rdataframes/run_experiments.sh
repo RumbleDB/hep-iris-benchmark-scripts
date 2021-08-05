@@ -21,6 +21,20 @@ query_cmd="$SOURCE_DIR/run_query.sh"
 experiment_dir="$experiments_dir/experiment_$(date +%F-%H-%M-%S)"
 mkdir -p $experiment_dir
 
+# Find S3 config
+S3_INPUT_PATH=$(
+    . "$SOURCE_DIR/../common/ec2-helpers.sh"
+    echo "$S3_INPUT_PATH" | sed "s~^s3://~s3https://s3.$S3_REGION.amazonaws.com/~"
+)
+S3_ACCESS_KEY=$(
+    . "$SOURCE_DIR/../common/ec2-helpers.sh"
+    echo "$S3_ACCESS_KEY"
+)
+S3_SECRET_KEY=$(
+    . "$SOURCE_DIR/../common/ec2-helpers.sh"
+    echo "$S3_SECRET_KEY"
+)
+
 # Store instance information
 aws ec2 describe-instances --instance-id $instanceids \
     > "$experiment_dir/instances.json"
@@ -35,6 +49,10 @@ function run_one {(
     run_dir="$experiment_dir/run_$(date +%F-%H-%M-%S.%3N)"
     mkdir $run_dir
 
+    # Input path: choose one
+    input_file="/data/Run2012B_SingleMu_${num_events}.root"
+    #input_file="$S3_INPUT_PATH/Run2012B_SingleMu_${num_events}.root"
+
     tee "$run_dir/config.json" <<-EOF
 		{
 		    "system": "rdataframes",
@@ -42,6 +60,7 @@ function run_one {(
 		    "num_events": $num_events,
 		    "query_id": "$query_id",
 		    "run_num": $run_num,
+		    "input_file": "$input_file",
 		    "num_iterations": $NUM_ITERATIONS,
 		    "multithreading": $MULTITHREADING
 		}
@@ -51,7 +70,7 @@ function run_one {(
         "$query_cmd" \
             -n $NUM_ITERATIONS \ \
             $query_id \
-            "/data/Run2012B_SingleMu_${num_events}.root" \
+            "$input_file" \
             $MULTITHREADING
         exit_code=$?
         echo "Exit code: $exit_code"

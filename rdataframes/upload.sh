@@ -19,8 +19,6 @@ echo "Uploading data..."
     do
         n=$((2**$l*1000))
 
-        s3a_input_path="$(echo "$S3_INPUT_PATH" | sed 's~^s3://~s3a://~')"
-
         ssh -q ec2-user@$dnsname \
             aws s3 cp "$S3_INPUT_PATH/Run2012B_SingleMu_${n}.root" /data/input/
     done
