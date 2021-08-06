@@ -4,7 +4,8 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 NUM_RUNS=1
 NUM_ITERATIONS=3
-MULTITHREADING=true
+ENABLE_MULTITHREADING=true
+ENABLE_OPTIMIZATIONS=true
 
 # Find instance IDs
 instanceids=($(
@@ -62,16 +63,18 @@ function run_one {(
 		    "run_num": $run_num,
 		    "input_file": "$input_file",
 		    "num_iterations": $NUM_ITERATIONS,
-		    "multithreading": $MULTITHREADING
+		    "multithreading": $ENABLE_MULTITHREADING,
+		    "optimizations": $ENABLE_OPTIMIZATIONS
 		}
 		EOF
 
     (
         "$query_cmd" \
-            -n $NUM_ITERATIONS \ \
-            $query_id \
-            "$input_file" \
-            $MULTITHREADING
+            -n $NUM_ITERATIONS \
+            -b $query_id \
+            -m $ENABLE_MULTITHREADING \
+            -o $ENABLE_OPTIMIZATIONS \
+            "$input_file"
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
