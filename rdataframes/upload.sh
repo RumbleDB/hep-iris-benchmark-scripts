@@ -15,10 +15,12 @@ echo "Uploading data..."
 (
     dnsname=${dnsnames[0]}
     ssh -q ec2-user@$dnsname mkdir -p /data/input/
-    for l in {0..16}
-    do
-        n=$((2**$l*1000))
 
+    NSF1=53446198
+
+    for n in $(for l in {0..15}; do echo $((2**$l*1000)); done) \
+             $(for l in {0..0};  do echo $((2**$l*$NSF1)); done)
+    do
         ssh -q ec2-user@$dnsname \
             aws s3 cp "$S3_INPUT_PATH/Run2012B_SingleMu_${n}.root" /data/input/
     done

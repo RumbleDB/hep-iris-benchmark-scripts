@@ -6,6 +6,7 @@ NUM_RUNS=1
 NUM_ITERATIONS=3
 ENABLE_MULTITHREADING=true
 ENABLE_OPTIMIZATIONS=true
+NSF1=53446198
 
 # Find instance IDs
 instanceids=($(
@@ -50,9 +51,18 @@ function run_one {(
     run_dir="$experiment_dir/run_$(date +%F-%H-%M-%S.%3N)"
     mkdir $run_dir
 
+    num_events_per_file=$num_events
+    num_files=1
+    if [[ $(($num_events % $NSF1)) -eq 0 ]]
+    then
+        num_events_per_file=$NSF1
+        num_files=$((num_events / $NSF1))
+    fi
+
     # Input path: choose one
-    input_file="/data/Run2012B_SingleMu_${num_events}.root"
-    #input_file="$S3_INPUT_PATH/Run2012B_SingleMu_${num_events}.root"
+    input_file="/data/Run2012B_SingleMu_${num_events_per_file}.root"
+    #input_file="$S3_INPUT_PATH/Run2012B_SingleMu_${num_events_per_file}.root"
+    input_files=($(for _ in $(seq 1 $num_files); do echo "$input_file"; done))
 
     tee "$run_dir/config.json" <<-EOF
 		{
@@ -74,7 +84,7 @@ function run_one {(
             -b $query_id \
             -m $ENABLE_MULTITHREADING \
             -o $ENABLE_OPTIMIZATIONS \
-            "$input_file"
+            "${input_files[@]}"
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
@@ -99,7 +109,7 @@ function run_many() {(
     done
 )}
 
-NUM_EVENTS=($(for l in {0..16}; do echo $((2**$l*1000)); done))
+NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {0..7}; do echo $((2**$l*$NSF1)); done))
 QUERY_IDS=(1 2 3 4 5 6a 6b 6 7 8)
 
 run_many NUM_EVENTS QUERY_IDS
