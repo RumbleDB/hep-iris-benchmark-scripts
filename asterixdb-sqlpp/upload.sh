@@ -13,6 +13,12 @@ dnsnames=($(discover_dnsnames "$deploy_dir"))
 # Upload data
 echo "Uploading data..."
 (
+    for dnsname in ${dnsnames[@]}
+    do
+        ssh -q ec2-user@$dnsname \
+            mkdir -p /data/input
+    done
+
     for l in {0..16}
     do
         n=$((2**$l*1000))
@@ -90,11 +96,47 @@ echo "Uploading data..."
             --datatype event --file-format json --storage-location external \
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
+        # External relations using local files
+        for dnsname in ${dnsnames[@]}
+        do
+            ssh -q ec2-user@$dnsname \
+                aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/input/$dataset_name/"
+        done
+
+        "$SCRIPT_PATH/queries/scripts/create_table.py" \
+            --asterixdb-server localhost:19002 \
+            --external-path "file:///data/input/$dataset_name/*.json.gz" \
+            --dataset-name Run2012B_SingleMu_${n}_untyped_json_hdfs \
+            --datatype any --file-format json --storage-location external \
+            --log-level INFO --asterixdb-dataverse IrisHepBenchmark
+
+        "$SCRIPT_PATH/queries/scripts/create_table.py" \
+            --asterixdb-server localhost:19002 \
+            --external-path "file:///data/input/$dataset_name/*.json.gz" \
+            --dataset-name Run2012B_SingleMu_${n}_typed_json_hdfs \
+            --datatype event --file-format json --storage-location external \
+            --log-level INFO --asterixdb-dataverse IrisHepBenchmark
+
         #
         # Parquet
         #
 
         dataset_name="Run2012B_SingleMu_restructured_${n}"
+
+        # Copy from S3 to disk
+        for dnsname in ${dnsnames[@]}
+        do
+            ssh -q ec2-user@$dnsname \
+                aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/input/$dataset_name/"
+        done
+
+        # External relation using local files
+        "$SCRIPT_PATH/queries/scripts/create_table.py" \
+            --asterixdb-server localhost:19002 \
+            --external-path "file:///data/input/$dataset_name/*.parquet" \
+            --dataset-name Run2012B_SingleMu_${n}_untyped_parquet_local \
+            --datatype any --file-format parquet --storage-location external \
+            --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
         # Copy from S3 to HDFS
         ssh -q ec2-user@${dnsnames[0]} \
