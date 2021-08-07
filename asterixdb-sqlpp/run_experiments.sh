@@ -13,6 +13,13 @@ instanceids=($(
     discover_instanceids "$deploy_dir"
 ))
 
+# Find DNS names
+dnsnames=($(
+    . "$SOURCE_DIR/../common/ec2-helpers.sh"
+    deploy_dir="$(discover_cluster "$SOURCE_DIR/../experiments")"
+    discover_dnsnames "$deploy_dir"
+))
+
 # Find experiment directory
 experiments_dir="$SOURCE_DIR"/experiments
 query_cmd="$SOURCE_DIR"/queries/test_queries.py
@@ -24,6 +31,28 @@ mkdir -p $experiment_dir
 # Store instance information
 aws ec2 describe-instances --instance-id $instanceids \
     > "$experiment_dir/instances.json"
+
+function print_stats {(
+    for ((i = 0; i < ${#dnsnames[@]}; i++));
+    do
+        dnsname=${dnsnames[$i]}
+        (
+            ssh -q ec2-user@$dnsname \
+                <<-'EOF'
+				echo -n "CLK_TCK: "
+				getconf CLK_TCK
+
+				pids="$(/usr/sbin/pidof java)"
+				for pid in $pids
+                do
+				    cat /proc/$pid/stat
+                done
+
+                cat /proc/net/dev
+				EOF
+        ) 2>&1 | while read line; do echo "$i|$line"; done
+    done
+)}
 
 function run_one {(
     trap 'exit 1' ERR
@@ -50,6 +79,7 @@ function run_one {(
 		EOF
 
     (
+        print_stats
         "$query_cmd" -vs --log-cli-level INFO \
             --asterixdb-server localhost:19002 \
             --asterixdb-dataverse $DATAVERSE \
@@ -60,6 +90,7 @@ function run_one {(
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
+        print_stats
     ) 2>&1 | tee "$run_dir"/run.log
 )}
 
