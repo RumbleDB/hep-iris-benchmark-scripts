@@ -15,6 +15,7 @@ dnsname=${dnsnames[0]}
 echo 3 | ssh -q ec2-user@$dnsname sudo tee /proc/sys/vm/drop_caches > /dev/null
 ssh -q ec2-user@$dnsname \
     docker run --rm \
+        -e "S3_ACCESS_KEY=$S3_ACCESS_KEY" -e "S3_SECRET_KEY=$S3_SECRET_KEY" \
         -v /data/input/:/data/:ro \
         -v /data/run_benchmark.sh:/root/util/run_benchmark.sh:ro \
         opendata-benchmarks \

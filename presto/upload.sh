@@ -13,10 +13,11 @@ dnsnames=($(discover_dnsnames "$deploy_dir"))
 # Upload data
 echo "Uploading data..."
 (
-    for l in {0..16}
-    do
-        n=$((2**$l*1000))
+    NSF1=53446198
 
+    for n in $(for l in {0..15}; do echo $((2**$l*1000)); done) \
+             $(for l in {0..7};  do echo $((2**$l*$NSF1)); done)
+    do
         s3a_input_path="$(echo "$S3_INPUT_PATH" | sed 's~^s3://~s3a://~')"
 
         "$SCRIPT_PATH/queries/scripts/create_table.py" \

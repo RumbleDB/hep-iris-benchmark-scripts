@@ -2,8 +2,8 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-PRESTO_CMD="$SOURCE_DIR"/queries/scripts/presto.sh
-INPUT_TABLE_FORMAT="Run2012B_SingleMu_%i"
+INPUT_TABLE_FORMAT="Run2012B_SingleMu_%i_%s"
+DATAVERSE="IrisHepBenchmark"
 NUM_RUNS=3
 
 # Find instance IDs
@@ -28,18 +28,19 @@ aws ec2 describe-instances --instance-id $instanceids \
 function run_one {(
     trap 'exit 1' ERR
 
-    num_events=$1
-    query_id=$2
-    run_num=$3
+    table_variant=$1
+    num_events=$2
+    query_id=$3
+    run_num=$4
 
-    input_table="$(printf $INPUT_TABLE_FORMAT $num_events)"
+    input_table="$(printf $INPUT_TABLE_FORMAT $num_events $table_variant)"
 
     run_dir="$experiment_dir/run_$(date +%F-%H-%M-%S.%3N)"
     mkdir $run_dir
 
     tee "$run_dir/config.json" <<-EOF
 		{
-		    "system": "presto",
+		    "system": "asterixdb",
 		    "run_dir": "$(basename "$experiment_dir")/$(basename "$run_dir")",
 		    "num_events": $num_events,
 		    "input_table": "$input_table",
@@ -50,8 +51,8 @@ function run_one {(
 
     (
         "$query_cmd" -vs --log-cli-level INFO \
-            --presto-cmd "$PRESTO_CMD" \
-            --presto-server "localhost:8080" \
+            --asterixdb-server localhost:19002 \
+            --asterixdb-dataverse $DATAVERSE \
             --input-table "$input_table" \
             --freeze-result true \
             --num-events $num_events \
@@ -60,48 +61,38 @@ function run_one {(
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
     ) 2>&1 | tee "$run_dir"/run.log
-
-    execution_id="$(cat "$run_dir/run.log" | grep -oE "Query ID: .*" | cut -f3 -d' ')"
-    (
-        if [[ -n "$query_id" ]]; then
-            wget http://localhost:8080/v1/query/$execution_id -qO - | python3 -m json.tool
-        else
-            echo "{}"
-        fi
-    ) > "$run_dir"/query.json
 )}
 
 function run_many() {(
     trap 'exit 1' ERR
 
-    local -n num_events_configs=$1
-    local -n query_ids_configs=$2
+    local -n table_variants_configs=$1
+    local -n num_events_configs=$2
+    local -n query_ids_configs=$3
 
-    for num_events in "${num_events_configs[@]}"
+    for table_variant in "${table_variants_configs[@]}"
     do
-        for query_id in "${query_ids_configs[@]}"
+        for num_events in "${num_events_configs[@]}"
         do
-            for run_num in $(seq $NUM_RUNS)
+            for query_id in "${query_ids_configs[@]}"
             do
-                run_one "$num_events" "$query_id" "$run_num"
+                for run_num in $(seq $NUM_RUNS)
+                do
+                    run_one "$table_variant" "$num_events" "$query_id" "$run_num"
+                done
             done
         done
     done
 )}
 
-NSF1=53446198
-
-NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {0..0}; do echo $((2**$l*$NSF1)); done))
+TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3)
+NUM_EVENTS=($(for l in {0..10}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 
-run_many NUM_EVENTS QUERY_IDS
+run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
 
-NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {1..6}; do echo $((2**$l*$NSF1)); done))
+TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3)
+NUM_EVENTS=($(for l in {11..16}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo query-$q; done))
 
-run_many NUM_EVENTS QUERY_IDS
-
-NUM_EVENTS=($(for l in {7..7}; do echo $((2**$l*$NSF1)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5; do echo query-$q; done))
-
-run_many NUM_EVENTS QUERY_IDS
+run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
