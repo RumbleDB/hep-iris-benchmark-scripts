@@ -68,7 +68,6 @@ echo "Uploading data..."
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
         # External relations using files on S3
-        dataset_name="Run2012B_SingleMu_restructured_json_${n}"
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
             --bucket-name $S3_INPUT_BUCKET \
@@ -80,7 +79,6 @@ echo "Uploading data..."
             --datatype any --file-format json --storage-location external \
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
-        dataset_name="Run2012B_SingleMu_restructured_json_${n}"
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
             --bucket-name $S3_INPUT_BUCKET \
@@ -117,6 +115,7 @@ echo "Uploading data..."
             --datatype any --file-format parquet --storage-location external \
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
+        # External relation using files on S3
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
             --bucket-name $S3_INPUT_BUCKET \
