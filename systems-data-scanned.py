@@ -37,7 +37,7 @@ args = parser.parse_args()
 
 df = pd.read_json(args.input, lines=True)
 
-df = df[df.cpu_time.notna()]
+df = df[df.data_scanned.notna()]
 df = df[df.query_id != '6']
 df = df[df.system != 'athena']
 df.loc[df.num_cores.isna(), 'num_cores'] = 0
