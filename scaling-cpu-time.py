@@ -6,6 +6,8 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
+NSF1=53446198
+
 plt.rcParams.update({
     'errorbar.capsize': 2,
     'pdf.fonttype': 42,
@@ -41,7 +43,7 @@ df = df[df.system == args.system]
 df.loc[df.num_cores.isna(), 'num_cores'] = 0
 
 # Average over runs
-df = df.groupby(['system', 'query_id', 'num_events', 'num_cores']).median().reset_index()
+df = df.groupby(['query_id', 'num_events', 'num_cores']).median().reset_index()
 
 # Use largest configuration
 df = df[df.num_cores == df.num_cores.max()]
@@ -57,16 +59,18 @@ if not args.no_xaxis:
 ax.set_xscale('log')
 ax.set_yscale('log')
 
-for i, query_id in enumerate(sorted(df.query_id.unique())):
+for i, query_id in enumerate(['1', '2', '3', '4', '5', '6-1', '6-2', '7', '8']):
     data_g = df[df.query_id == query_id]
     label = query_id.replace('-1', 'a').replace('-2', 'b')
     label = 'Q' + label
     ax.plot(data_g.num_events, data_g.cpu_time,
             label=label)
 
-ax.set_xlim(0.8*1000*2**0, 53446198/0.8)
-ax.set_xticks([2**i*1000 for i in range(16)] + [53446198])
-ax.set_xticklabels(['1k', '', '', '', '16k', '', '', '', '256k', '', '', '', '4M', '', '', '', '53M'])
+ax.set_xlim(0.8*1000*2**0, 128*NSF1/0.8)
+ax.set_xticks([NSF1*2**i for i in range(-16, 8)], minor=True)
+ax.set_xticklabels([''] * 34, minor=True)
+ax.set_xticks([NSF1*2**i for i in range(-12, 8, 6)])
+ax.set_xticklabels(['1/4Ki', '1/64', '1', '64'])
 ax.set_ylim(0.01, 10*60)
 ax.set_yticks([0.01, 0.1, 1, 10, 60, 10*60])
 ax.set_yticklabels(['10ms', '.1s', '1s', '10s', '1m', '10m'])

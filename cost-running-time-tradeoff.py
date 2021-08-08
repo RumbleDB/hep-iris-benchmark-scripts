@@ -41,6 +41,7 @@ df = df[df.query_id == args.query]
 
 df = df[(df.system != 'presto') | (df.num_cores != 0)]
 df = df[df.system != 'athena'] # exclude Athena v1, which reports bogus numbers
+df = df[df.num_events <= 53446198]
 
 # Average over runs
 df = df.groupby(['system', 'query_id', 'num_events', 'num_cores']).median().reset_index()
