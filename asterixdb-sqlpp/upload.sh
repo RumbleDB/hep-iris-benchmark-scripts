@@ -19,17 +19,17 @@ echo "Uploading data..."
             mkdir -p /data/input
     done
 
-    for l in {0..16}
+    NSF1=53446198
+
+    #
+    # Copy data into instance
+    #
+
+    for n in $(for l in {0..16}; do echo $((2**$l*1000)); done) $NSF1
     do
-        n=$((2**$l*1000))
-
-        #
-        # JSON
-        #
-
         dataset_name="Run2012B_SingleMu_restructured_json_${n}"
 
-        # Copy from S3 to HDFS
+        # Copy JSON data from S3 to HDFS
         ssh -q ec2-user@${dnsnames[0]} \
             <<-EOF
 			mkdir -p /data/tmp
@@ -38,6 +38,55 @@ echo "Uploading data..."
 			./hadoop/bin/hadoop fs -put "/data/tmp/$dataset_name/" /
 			rm -r "/data/tmp/$dataset_name/"
 			EOF
+
+        for dnsname in ${dnsnames[@]}
+        do
+            ssh -q ec2-user@$dnsname \
+                aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/input/$dataset_name/"
+        done
+
+        dataset_name="Run2012B_SingleMu_restructured_${n}"
+
+        # Copy Parquet data from S3 to disk
+        for dnsname in ${dnsnames[@]}
+        do
+            ssh -q ec2-user@$dnsname \
+                aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/input/$dataset_name/"
+        done
+
+        # Copy Parquet data from S3 to HDFS
+        ssh -q ec2-user@${dnsnames[0]} \
+            <<-EOF
+			mkdir -p /data/tmp
+			aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/tmp/$dataset_name/"
+			./hadoop/bin/hadoop fs -mkdir "/$dataset_name"
+			./hadoop/bin/hadoop fs -put "/data/tmp/$dataset_name/" /
+			rm -r "/data/tmp/$dataset_name/"
+			EOF
+    done
+
+    #
+    # Replicate
+    #
+
+    for sf in $(for l in {0..7}; do echo $((2**$l)); done)
+    do
+        :
+    done
+
+    #
+    # Create tables
+    #
+
+    for n in $(for l in {0..15}; do echo $((2**$l*1000)); done) \
+             $(for l in {0..7};  do echo $((2**$l*$NSF1)); done)
+    do
+
+        #
+        # JSON
+        #
+
+        dataset_name="Run2012B_SingleMu_restructured_json_${n}"
 
         # Internal relations loaded from files on HDFS
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
@@ -97,12 +146,6 @@ echo "Uploading data..."
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
         # External relations using local files
-        for dnsname in ${dnsnames[@]}
-        do
-            ssh -q ec2-user@$dnsname \
-                aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/input/$dataset_name/"
-        done
-
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
             --external-path "file:///data/input/$dataset_name/*.json.gz" \
@@ -123,13 +166,6 @@ echo "Uploading data..."
 
         dataset_name="Run2012B_SingleMu_restructured_${n}"
 
-        # Copy from S3 to disk
-        for dnsname in ${dnsnames[@]}
-        do
-            ssh -q ec2-user@$dnsname \
-                aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/input/$dataset_name/"
-        done
-
         # External relation using local files
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
@@ -137,16 +173,6 @@ echo "Uploading data..."
             --dataset-name Run2012B_SingleMu_${n}_untyped_parquet_local \
             --datatype any --file-format parquet --storage-location external \
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
-
-        # Copy from S3 to HDFS
-        ssh -q ec2-user@${dnsnames[0]} \
-            <<-EOF
-			mkdir -p /data/tmp
-			aws s3 cp --no-progress --recursive "$S3_INPUT_PATH/$dataset_name/" "/data/tmp/$dataset_name/"
-			./hadoop/bin/hadoop fs -mkdir "/$dataset_name"
-			./hadoop/bin/hadoop fs -put "/data/tmp/$dataset_name/" /
-			rm -r "/data/tmp/$dataset_name/"
-			EOF
 
         # External relation using files on HDFS
         "$SCRIPT_PATH/queries/scripts/create_table.py" \

@@ -116,6 +116,8 @@ function run_many() {(
     done
 )}
 
+NSF1=53446198
+
 TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3 untyped_parquet_local)
 NUM_EVENTS=($(for l in {0..10}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
@@ -123,7 +125,7 @@ QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
 
 TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3 untyped_parquet_local)
-NUM_EVENTS=($(for l in {11..16}; do echo $((2**$l*1000)); done))
+NUM_EVENTS=($(for l in {11..15}; do echo $((2**$l*1000)); done) $(for l in {0..7}; do echo $((2**$l*$NSF1)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo query-$q; done))
 
 run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
