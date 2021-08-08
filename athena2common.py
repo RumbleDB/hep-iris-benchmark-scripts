@@ -13,7 +13,10 @@ args = parser.parse_args()
 df = pd.read_json(args.input, lines=True)
 
 # Clean up and convert to common schema
-df.query_id = df.query_id.str.replace('q', '').replace('8-1', '8')
+df.query_id = df.query_id \
+    .str.replace('query-', '') \
+    .str.replace('q', '') \
+    .str.replace('8-1', '8')
 df = df[df.query_id != '8-2']
 df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
 df.loc[df.work_group.fillna('').str.endswith('-v2'), 'system'] = 'athena-v2'
