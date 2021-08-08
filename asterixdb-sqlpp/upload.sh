@@ -149,14 +149,14 @@ echo "Uploading data..."
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
             --external-path "file:///data/input/$dataset_name/*.json.gz" \
-            --dataset-name Run2012B_SingleMu_${n}_untyped_json_hdfs \
+            --dataset-name Run2012B_SingleMu_${n}_untyped_json_local \
             --datatype any --file-format json --storage-location external \
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
         "$SCRIPT_PATH/queries/scripts/create_table.py" \
             --asterixdb-server localhost:19002 \
             --external-path "file:///data/input/$dataset_name/*.json.gz" \
-            --dataset-name Run2012B_SingleMu_${n}_typed_json_hdfs \
+            --dataset-name Run2012B_SingleMu_${n}_typed_json_local \
             --datatype event --file-format json --storage-location external \
             --log-level INFO --asterixdb-dataverse IrisHepBenchmark
 
