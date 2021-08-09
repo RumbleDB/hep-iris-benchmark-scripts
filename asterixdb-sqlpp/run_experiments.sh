@@ -13,6 +13,13 @@ instanceids=($(
     discover_instanceids "$deploy_dir"
 ))
 
+# Find DNS names
+dnsnames=($(
+    . "$SOURCE_DIR/../common/ec2-helpers.sh"
+    deploy_dir="$(discover_cluster "$SOURCE_DIR/../experiments")"
+    discover_dnsnames "$deploy_dir"
+))
+
 # Find experiment directory
 experiments_dir="$SOURCE_DIR"/experiments
 query_cmd="$SOURCE_DIR"/queries/test_queries.py
@@ -24,6 +31,28 @@ mkdir -p $experiment_dir
 # Store instance information
 aws ec2 describe-instances --instance-id $instanceids \
     > "$experiment_dir/instances.json"
+
+function print_stats {(
+    for ((i = 0; i < ${#dnsnames[@]}; i++));
+    do
+        dnsname=${dnsnames[$i]}
+        (
+            ssh -q ec2-user@$dnsname \
+                <<-'EOF'
+				echo -n "CLK_TCK: "
+				getconf CLK_TCK
+
+				pids="$(/usr/sbin/pidof java)"
+				for pid in $pids
+                do
+				    cat /proc/$pid/stat
+                done
+
+                cat /proc/net/dev
+				EOF
+        ) 2>&1 | while read line; do echo "$i|$line"; done
+    done
+)}
 
 function run_one {(
     trap 'exit 1' ERR
@@ -50,6 +79,7 @@ function run_one {(
 		EOF
 
     (
+        print_stats
         "$query_cmd" -vs --log-cli-level INFO \
             --asterixdb-server localhost:19002 \
             --asterixdb-dataverse $DATAVERSE \
@@ -60,6 +90,7 @@ function run_one {(
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
+        print_stats
     ) 2>&1 | tee "$run_dir"/run.log
 )}
 
@@ -85,14 +116,32 @@ function run_many() {(
     done
 )}
 
-TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3)
+NSF1=53446198
+
+#TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3 untyped_parquet_local)
+TABLE_VARIANTS=(untyped_parquet_s3)
+
 NUM_EVENTS=($(for l in {0..10}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 
 run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
 
-TABLE_VARIANTS=(typed_internal untyped_internal typed_json_hdfs untyped_json_hdfs typed_json_s3 untyped_json_s3 untyped_parquet_hdfs untyped_parquet_s3)
-NUM_EVENTS=($(for l in {11..16}; do echo $((2**$l*1000)); done))
+NUM_EVENTS=($(for l in {11..15}; do echo $((2**$l*1000)); done) $(for l in {0..1}; do echo $((2**$l*$NSF1)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo query-$q; done))
+
+run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
+
+NUM_EVENTS=($(for l in {2..2}; do echo $((2**$l*$NSF1)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7; do echo query-$q; done))
+
+run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
+
+NUM_EVENTS=($(for l in {3..3}; do echo $((2**$l*$NSF1)); done))
+QUERY_IDS=($(for q in 1 3 4; do echo query-$q; done))
+
+run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS
+
+NUM_EVENTS=($(for l in {4..4}; do echo $((2**$l*$NSF1)); done))
+QUERY_IDS=($(for q in 1; do echo query-$q; done))
 
 run_many TABLE_VARIANTS NUM_EVENTS QUERY_IDS

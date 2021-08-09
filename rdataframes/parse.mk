@@ -13,7 +13,7 @@ all: result.json
 result.json: $(RESULT_FILES)
 	cat $^ > $@
 
-%/result.json: %/config.json
+%/result.json: %/run.log %/config.json
 	$(SUMMARIZE_RUN) $(dir $<) > $@
 
 clean:
