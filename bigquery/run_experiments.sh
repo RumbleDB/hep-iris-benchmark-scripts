@@ -2,7 +2,7 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-INPUT_TABLE_FORMAT="Run2012B_SingleMu_restructured_%i_view"
+INPUT_TABLE_FORMAT="Run2012B_SingleMu_restructured_external_%i_view"
 DATA_SET_ID="iris_hep_benchmark_data"
 NUM_RUNS=3
 
@@ -66,7 +66,9 @@ function run_many() {(
     done
 )}
 
-NUM_EVENTS=($(for l in {0..16}; do echo $((2**$l*1000)); done))
+NSF1=53446198
+
+NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {0..7}; do echo $((2**$l*$NSF1)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 
 run_many NUM_EVENTS QUERY_IDS
