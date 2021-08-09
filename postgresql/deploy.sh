@@ -13,13 +13,14 @@ experiments_dir="$SCRIPT_PATH/../experiments"
 mkdir -p "$experiments_dir"
 deploy_cluster "$experiments_dir" $NUM_INSTANCES $INSTANCE_TYPE
 
-Deploy software on machines
+# Deploy software on machines
 echo "Deploying software..."
 for dnsname in ${dnsnames[*]}
 do
     (
         (
-            scp -r "$SCRIPT_PATH/queries/scripts" ec2-user@$dnsname:/data
+            scp -r "$SCRIPT_PATH/queries" ec2-user@$dnsname:/data
+            scp "$SCRIPT_PATH/etc/postgresql.conf" ec2-user@$dnsname:/data
             ssh -q ec2-user@$dnsname "bash -s" < "$SCRIPT_PATH"/environment.sh
         ) &>> "$deploy_dir/deploy_$dnsname.log"
         echo "Done deploying $dnsname."
