@@ -70,7 +70,14 @@ df['extrapolated_query_price'] = \
 df['extrapolated_query_price_ct'] = df.extrapolated_query_price * 100
 df['extrapolated_running_time'] = \
     df.running_time / df.num_events * df.num_events.max()
+df['extrapolated_running_time_h'] = df.extrapolated_running_time / 3600
 df.sort_values(by=['num_cores'], inplace=True)
+
+# Print best possible extrapolation
+print(
+    df[['system', 'extrapolated_running_time_h', 'extrapolated_query_price']]
+        .groupby('system')
+        .min())
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
