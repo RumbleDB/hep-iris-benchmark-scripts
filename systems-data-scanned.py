@@ -159,6 +159,7 @@ styles = {
     'athena-v2':         {'facecolor': colors[6], 'label': 'Athena (v2)*'},
     'bigquery':          {'facecolor': colors[2], 'label': 'BigQuery'},
     'bigquery-external': {'facecolor': colors[3], 'label': 'BigQuery (external)'},
+    'postgres':          {'facecolor': colors[7], 'label': 'Postgres'},
     'presto':            {'facecolor': colors[4], 'label': 'Presto'},
     'rdataframes':       {'facecolor': colors[5], 'label': 'RDataFrames'},
     'rumble':            {'facecolor': ETHa,      'label': 'Rumble'},

@@ -99,6 +99,7 @@ styles = {
     'athena-v2':         {'color': colors[6], 'marker': 'P', 'markersize': 7, 'label': 'Athena (v2)', 'markerfacecolor': 'white'},
     'bigquery':          {'color': colors[2], 'marker': '^', 'markersize': 5, 'label': 'BigQuery'},
     'bigquery-external': {'color': colors[3], 'marker': 'v', 'markersize': 5, 'label': 'BigQuery\n(external)'},
+    'postgres':          {'color': colors[7], 'marker': 'h', 'markersize': 7, 'label': 'Postgres', 'markerfacecolor': 'white'},
     'presto':            {'color': colors[4], 'marker': 'o', 'markersize': 3, 'label': 'Presto', 'zorder': 0},
     'rdataframes':       {'color': colors[5], 'marker': 's', 'markersize': 3, 'label': 'RDataFrames'},
     'rumble':            {'color': ETHa,      'marker': 'x', 'markersize': 3, 'label': 'Rumble'},
