@@ -1,5 +1,5 @@
 # Get the data and start the docker image
-cd /data && aws s3 cp s3://hep-adl-ethz/hep-parquet/original/ . --recursive --exclude="*" --include "Run2012B_SingleMu_*" && cd ~
+cd /data && aws s3 cp s3://hep-adl-ethz/hep-parquet/original/ . --no-progress --recursive --exclude="*" --include "Run2012B_SingleMu_*" && cd ~
 docker run --name psql_deploy -v /data:/data -d dgraur/postgres_parquet:latest
 wait 5
 
