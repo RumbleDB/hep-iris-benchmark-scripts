@@ -60,11 +60,13 @@ function run_one {(
     ) 2>&1 | tee "$run_dir"/run.log
 
     # Get the results of the query and store them locally
-    ssh ec2-user@${dnsnames[0]} cat "/data/query.log" \
-        | jq --arg num_events ${num_events} --arg query_id ${query_id} \
-        --arg run_num ${run_num} \
-        '. + {num_events: $num_events, query_id: $query_id, run_num: $run_num}' \
-        >> $run_dir/query_stats.log
+    if [ "$warmup" != "yes" ]; then
+        ssh ec2-user@${dnsnames[0]} cat "/data/query.log" \
+            | jq --arg num_events ${num_events} --arg query_id ${query_id} \
+            --arg run_num ${run_num} \
+            '. + {num_events: $num_events, query_id: $query_id, run_num: $run_num}' \
+            >> $run_dir/query_stats.log
+    fi
 )}
 
 function run_many() {(
@@ -72,6 +74,7 @@ function run_many() {(
 
     local -n num_events_configs=$1
     local -n query_ids_configs=$2
+    local warmup=$3
 
     for num_events in "${num_events_configs[@]}"
     do
@@ -79,7 +82,7 @@ function run_many() {(
         do
             for run_num in $(seq $NUM_RUNS)
             do
-                run_one "$num_events" "$query_id" "$run_num"
+                run_one "$num_events" "$query_id" "$run_num" "$warmup"
             done
         done
     done
@@ -92,19 +95,25 @@ run_many NUM_EVENTS QUERY_IDS
 python3 postprocess_statistics.py ${EXP_DIR}
 exit 
 
-NSF1=53446198
 
-NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {0..0}; do echo $((2**$l*$NSF1)); done))
+NUM_EVENTS=(1000)
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
+run_many NUM_EVENTS QUERY_IDS yes
 
-run_many NUM_EVENTS QUERY_IDS
+# Query 6-1, 6-2 and 8 cap out at 512000 events
+NUM_EVENTS=($(for l in {0..9}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
 
-NUM_EVENTS=($(for l in {0..15}; do echo $((2**$l*1000)); done) $(for l in {1..6}; do echo $((2**$l*$NSF1)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo query-$q; done))
+# Query 5, 7 cap out at 32M events
+NUM_EVENTS=($(for l in {10..15}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7; do echo query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
 
-run_many NUM_EVENTS QUERY_IDS
+# The rest keep going
+NUM_EVENTS=($(for l in {16..16}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4; do echo query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
 
-NUM_EVENTS=($(for l in {7..7}; do echo $((2**$l*$NSF1)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5; do echo query-$q; done))
-
-run_many NUM_EVENTS QUERY_IDS
+# Finally post-process the results
+python3 postprocess_statistics.py ${experiment_dir}
