@@ -1,6 +1,6 @@
 # Get the data and start the docker image
 cd /data && aws s3 cp s3://hep-adl-ethz/hep-parquet/original/ . --no-progress --recursive --exclude="*" --include "Run2012B_SingleMu_*" && cd ~
-docker run --name psql_deploy -v /data:/data -d dgraur/postgres_parquet:latest
+docker run --name psql_deploy -v /data:/data -d dgraur/postgres_parquet:13
 wait 5
 
 # Enable metrics in psql

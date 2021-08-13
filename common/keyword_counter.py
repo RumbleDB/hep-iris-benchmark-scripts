@@ -43,6 +43,9 @@ elif args.extension == "sql":
     "COUNT": 0,
     "ORDER": 0,
     "JOIN": 0,
+    "ARRAY_CAT": 0,
+    "ARRAY_AGG": 0,
+    "ARRAY_LENGTH": 0,
     "CARDINALITY": 0,
     "FILTER": 0,
     "WITH": 0,
@@ -53,6 +56,7 @@ elif args.extension == "sql":
     "COALESCE": 0,
     "TRANSFORM": 0,
     "ARRAY_UNION": 0,
+    "NONE_MATCH": 0,
     "UNNEST": 0,
     "FUNCTION": 0,
     "LIMIT": 0,
@@ -141,6 +145,7 @@ def main():
     pandas.json_normalize(summary).to_csv("summary.csv")
 
   if args.avg_clauses:
+    avg_unique_clause = sum([s["unique_clauses"] for s in summary]) / len(summary)
     metrics = line_metrics(
       lines,
       {
@@ -150,9 +155,10 @@ def main():
         "characters": 0,
         "unique_clauses": 0,
         "total_clauses": 0,
+        "unique_clauses_per_query": avg_unique_clause,
         "tokens": dict_counter.copy()
       })
-    print("Unique Clauses:", metrics["unique_clauses"])
+    print("Summary:\n", json.dumps(metrics, indent=4, sort_keys=True))
 
 
 if __name__ == '__main__':
