@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument('path', help='Path to the queries.')
 parser.add_argument('--extension', type=str, default="jq",
-                    help="The extension of the query files. Can be 'jq', 'sql', 'C'")
+                    help="The extension of the query files. Can be 'jq', 'sql', 'sqlpp', 'C'")
 parser.add_argument('--csv', action="store_true")
 parser.add_argument('--avg-clauses', action="store_true")
 args = parser.parse_args()
@@ -128,24 +128,25 @@ def eval_query(path):
 
 def main():
   lines = []
-  summary = []
+  summary = {}
   concatenated = ""
 
   for path in Path(args.path).rglob(f'*.{args.extension}'):
     result = eval_query(path)
-    summary.append(result[0])
+    summary[path] = result[0]
     lines.extend(result[1])
 
   with open("summary.json", "w") as f:
-    for j in summary:
+    for j in summary.values():
       json.dump(j, f)
       f.write("\n")
 
   if args.csv:
-    pandas.json_normalize(summary).to_csv("summary.csv")
+    pandas.json_normalize(summary.values()).to_csv("summary.csv")
 
   if args.avg_clauses:
-    avg_unique_clause = sum([s["unique_clauses"] for s in summary]) / len(summary)
+    queries = [s for k, s in summary.items() if k.name == "query." + args.extension]
+    avg_unique_clause = sum([x["unique_clauses"] for x in queries]) / len(queries)
     metrics = line_metrics(
       lines,
       {

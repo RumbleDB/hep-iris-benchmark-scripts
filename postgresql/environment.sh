@@ -1,9 +1,12 @@
+NUM_PARTITIONS_PER_NODE=${1:-2}
+
 # Get the data and start the docker image
 cd /data && aws s3 cp s3://hep-adl-ethz/hep-parquet/original/ . --no-progress --recursive --exclude="*" --include "Run2012B_SingleMu_*" && cd ~
 docker run --name psql_deploy -v /data:/data -d dgraur/postgres_parquet:13
 wait 5
 
 # Enable metrics in psql
+sed -i "s/PARTITION_COUNT/$NUM_PARTITIONS_PER_NODE/g" /data/postgresql.conf
 docker exec psql_deploy cp /data/postgresql.conf /var/lib/postgresql/data/postgresql.conf
 docker restart psql_deploy
 wait 5
