@@ -57,10 +57,7 @@ df.loc[df.num_cores.isna(), 'num_cores'] = 0
 df = df.groupby(['query_id', 'num_events', 'num_cores']).median().reset_index()
 
 # Use largest configuration
-if args.system == 'asterixdb':
-    df = df[df.num_cores == 8]
-else:
-    df = df[df.num_cores == df.num_cores.max()]
+df = df[df.num_cores == df.num_cores.max()]
 
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
@@ -80,6 +77,7 @@ for i, query_id in enumerate(['1', '2', '3', '4', '5', '6-1', '6-2', '7', '8']):
     label = 'Q' + label
     ax.plot(data_g.num_events, data_g.running_time,
             label=label)
+
 
 ax.set_xlim(0.8*1000*2**0, 128*NSF1/0.8)
 ax.set_xticks([NSF1*2**i for i in range(-16, 8)], minor=True)
