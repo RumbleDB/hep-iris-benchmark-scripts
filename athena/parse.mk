@@ -23,4 +23,4 @@ result.json: $(RESULT_FILES)
 	 echo "{}") > $@
 
 clean:
-	rm -f $(QUERY_FILES) $(RESULT_FILES)
+	rm -f $(QUERY_FILES) $(RESULT_FILES) result.json
