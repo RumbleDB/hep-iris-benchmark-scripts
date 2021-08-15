@@ -19,8 +19,13 @@ docker exec psql_deploy psql -U user user -c "create server parquet_srv foreign 
 docker exec psql_deploy psql -U user user -c "create user mapping for user server parquet_srv options (user 'user');"
 
 # Insert the data into psql
-docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --create-types --foreign-table --data-size=1000
+docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --create-types --foreign-table --data-size=1000 --path=/data/Run2012B_SingleMu_1000.parquet
 for i in {1..16}; do
-	docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --foreign-table --data-size=$(( 1000 * 2 ** ${i} ))
+	docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --foreign-table --data-size=$(( 1000 * 2 ** ${i} )) --path=/data/Run2012B_SingleMu_$(( 1000 * 2 ** ${i} )).parquet
+done
+
+# Insert the data into psql for SF2 TO SF64
+for i in {17..22}; do
+	docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --foreign-table --data-size=$(( 1000 * 2 ** ${i} )) --path=/data/Run2012B_SingleMu_65536000.parquet'
 done
 
