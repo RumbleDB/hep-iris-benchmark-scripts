@@ -29,11 +29,13 @@ df.query_id = df.query_id \
 df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
 df['system'] = 'postgres'
 df['num_cores'] = 1  # Postgres is single-threaded
-df['running_time'] = df.total_time / 1000
+df['running_time'] = df.internal_elapsed_time_s
 df['cpu_time'] = df.running_time * df.num_cores
-df['query_price'] = INSTANCE_PRICE_PER_HOUR['m5d.large'] * df.cpu_time / 3600
+df['query_price'] = \
+    INSTANCE_PRICE_PER_HOUR['m5d.large'] * df.running_time / 3600
 df['data_scanned'] = (df.shared_blks_hit + df.shared_blks_read +
-                      df.local_blks_hit + df.local_blks_read) * 8192
+                      df.local_blks_hit + df.local_blks_read) * 8192 + \
+                     df.internal_read_bytes
 
 # Project to minimum needed column set
 df = df[['system', 'query_id', 'num_events', 'cpu_time', 'running_time',
