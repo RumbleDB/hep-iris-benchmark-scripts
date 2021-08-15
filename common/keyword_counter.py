@@ -32,7 +32,7 @@ if args.extension == "jq":
     "EXISTS": 0,
     "EMPTY": 0
   }
-elif args.extension == "sql":
+elif args.extension == "sql" or args.extension == "sqlpp":
   dict_counter = {
     "SELECT": 0,
     "CAST": 0,
@@ -65,7 +65,9 @@ elif args.extension == "sql":
     "MAX_BY": 0,
     "MIN_BY": 0,
     "ARRAY_MAX": 0,
-    "SUM": 0 
+    "SUM": 0,
+    "LET": 0,
+    "VALUE": 0
   }
 else:
   dict_counter = {
@@ -98,7 +100,7 @@ def line_metrics(lines, metrics):
       tokens = line.split()
       for token in tokens:
         metrics["characters"] += len(token)
-        split_tokens = re.split("[^A-Z]", token.upper())
+        split_tokens = re.split("[^A-Z_]", token.upper())
         for split_token in split_tokens:
           if split_token in metrics["tokens"]:
             metrics["tokens"][split_token] += 1
@@ -147,6 +149,7 @@ def main():
   if args.avg_clauses:
     queries = [s for k, s in summary.items() if k.name == "query." + args.extension]
     avg_unique_clause = sum([x["unique_clauses"] for x in queries]) / len(queries)
+    avg_clause = sum([x["total_clauses"] for x in queries]) / len(queries)
     metrics = line_metrics(
       lines,
       {
@@ -156,7 +159,8 @@ def main():
         "characters": 0,
         "unique_clauses": 0,
         "total_clauses": 0,
-        "unique_clauses_per_query": avg_unique_clause,
+        "avg_clause_per_query": avg_clause,
+        "avg_unique_clauses_per_query": avg_unique_clause,
         "tokens": dict_counter.copy()
       })
     print("Summary:\n", json.dumps(metrics, indent=4, sort_keys=True))
