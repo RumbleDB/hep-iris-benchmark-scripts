@@ -26,6 +26,5 @@ done
 
 # Insert the data into psql for SF2 TO SF64
 for i in {17..22}; do
-	docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --foreign-table --data-size=$(( 1000 * 2 ** ${i} )) --path=/data/Run2012B_SingleMu_65536000.parquet'
+	docker exec psql_deploy python3 /data/queries/scripts/create_single_table.py --foreign-table --data-size=$(( 1000 * 2 ** ${i} )) --path=/data/Run2012B_SingleMu_65536000.parquet
 done
-
