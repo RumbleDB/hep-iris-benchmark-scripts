@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import re
 
 import pandas as pd
 
@@ -20,6 +21,12 @@ INSTANCE_PRICE_PER_HOUR = {
     'm5d.24xlarge': 5.424,
 }
 
+def num_cores_from_instance_type(s):
+    s = re.match('m5[a-z]*\.([0-9]*x?)large', s).group(1)
+    if s == '': return 1
+    if s == 'x': return 2
+    return int(s[:-1]) * 2
+
 # Read input
 df = pd.read_json(args.input, lines=True)
 
@@ -28,11 +35,13 @@ df.query_id = df.query_id \
     .str.replace('query-', '')
 df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
 df['system'] = 'postgres'
-df['num_cores'] = 1  # Postgres is single-threaded
 df['running_time'] = df.internal_elapsed_time_s
 df['cpu_time'] = df.running_time * df.num_cores
+df['instance_type'] = df.instance_type.combine_first(df.vm_type)
+df['num_cores'] = df.instance_type.apply(num_cores_from_instance_type)
 df['query_price'] = \
-    INSTANCE_PRICE_PER_HOUR['m5d.large'] * df.running_time / 3600
+    df.instance_type.apply(lambda s: INSTANCE_PRICE_PER_HOUR[s]) \
+        * df.running_time / 3600
 df['data_scanned'] = (df.shared_blks_hit + df.shared_blks_read +
                       df.local_blks_hit + df.local_blks_read) * 8192 + \
                      df.internal_read_bytes
