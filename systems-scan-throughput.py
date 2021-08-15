@@ -88,7 +88,7 @@ styles = {
     'postgres':          {'color': colors[7], 'label': 'Postgres'},
     'presto':            {'color': colors[4], 'label': 'Presto'},
     'rdataframes':       {'color': colors[5], 'label': 'RDataFrames'},
-    'rumble':            {'color': ETHa,      'label': 'Rumble'},
+    'rumble':            {'color': ETHa,      'label': 'RumbleDB'},
 }
 
 df['query_label'] = df.query_id \

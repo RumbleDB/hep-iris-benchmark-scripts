@@ -162,7 +162,7 @@ styles = {
     'postgres':          {'facecolor': colors[7], 'label': 'Postgres'},
     'presto':            {'facecolor': colors[4], 'label': 'Presto'},
     'rdataframes':       {'facecolor': colors[5], 'label': 'RDataFrames'},
-    'rumble':            {'facecolor': ETHa,      'label': 'Rumble'},
+    'rumble':            {'facecolor': ETHa,      'label': 'RumbleDB'},
     'ideal-compr':       {'linestyle': '-',       'label': 'Ideal (compr.)'},
     'ideal-uncompr':     {'linestyle': ':',       'label': 'Ideal (uncompr.)'},
 }
