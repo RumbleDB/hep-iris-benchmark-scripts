@@ -59,6 +59,17 @@ df = df.groupby(['query_id', 'num_events', 'num_cores']).median().reset_index()
 # Use largest configuration
 df = df[df.num_cores == df.num_cores.max()]
 
+df['max_sf'] = 600 / (df.running_time / df.num_events * NSF1)
+
+df_max_size = df[~df.running_time.isna()] \
+    .groupby(['query_id', 'num_cores']) \
+    .agg({'num_events': 'max'}) \
+    .reset_index()
+
+df_max_sf = df.merge(df_max_size, on=['query_id', 'num_events', 'num_cores'])
+
+print(df_max_sf[['query_id', 'num_events', 'running_time', 'max_sf']])
+
 fig = plt.figure(figsize=(2.3, 1.8))
 ax = fig.add_subplot(1, 1, 1)
 
