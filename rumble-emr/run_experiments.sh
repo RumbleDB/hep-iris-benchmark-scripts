@@ -4,7 +4,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 INPUT_TABLE_FORMAT="s3://hep-adl-ethz/hep-parquet/native/Run2012B_SingleMu-%i.parquet"
 INPUT_TABLE_FORMAT_SF="s3://hep-adl-ethz/hep-parquet/native-sf/%i/*.parquet"
-NUM_RUNS=3
+NUM_RUNS=1
 
 experiments_dir="$SOURCE_DIR"/experiments
 query_cmd="$SOURCE_DIR"/python/test_queries.py
@@ -30,8 +30,6 @@ function run_one {(
 	if [ "$num_events" -gt "65536000" ]; then 
 		input_table="$(printf $INPUT_TABLE_FORMAT_SF $(( $num_events / 65536000 )))"
 	fi
-
-	input_table="$(printf $INPUT_TABLE_FORMAT $num_events)"
 
 	run_dir="$experiment_dir/run_$(date +%F-%H-%M-%S.%3N)"
 	mkdir $run_dir
@@ -92,7 +90,33 @@ function run_many() {(
 run_one 1000 native-objects/query-1 1 yes
 
 # Run the warmups
-NUM_EVENTS=($(for l in 17; do echo $((2**$l*1000)); done))
+NUM_EVENTS=($(for l in 0; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS yes
+
+# Run the actual experiments
+# Queries 7 and 8 are dropped after SF4 
+NUM_EVENTS=($(for l in {17..18}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+
+# Query 4 and 5 are dropped after SF8
+NUM_EVENTS=($(for l in 19; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+
+# Query 2 is dropped after SF16
+NUM_EVENTS=($(for l in 20; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+
+# Query 3 is dropped after SF32
+NUM_EVENTS=($(for l in 21; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 3; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+
+# Query 1 is dropped after SF64
+NUM_EVENTS=($(for l in 22; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1; do echo native-objects/query-$q; done))
 run_many NUM_EVENTS QUERY_IDS no
 exit
