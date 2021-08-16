@@ -42,8 +42,12 @@ function run_one {(
 		}
 		EOF
 
-	application_id=$(curl "http://localhost:${stat_port}/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
-	entries=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length)
+	echo "Before the query to the upper"
+	if [ "$warmup" != "yes" ]; then
+		application_id=$(curl "http://localhost:${stat_port}/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
+		entries=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length)
+	fi
+	echo "Before the query"
 	(
 		"$query_cmd" -vs --log-cli-level INFO \
 			--freeze-result \
@@ -55,9 +59,9 @@ function run_one {(
 		echo "Exit code: $exit_code"
 		echo $exit_code > "$run_dir"/exit_code.log
 	) 2>&1 | tee "$run_dir"/run.log
-	entries=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
-
+	echo "After the query"
 	if [ "$warmup" != "yes" ]; then
+		entries=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
 		python3 get_metrics.py ${application_id} ${entries} 0 ${run_dir} --port=${stat_port}
 	fi
 )}
@@ -82,13 +86,13 @@ function run_many() {(
 )}
 
 # Start up Spark to avoid curl errors
-run_one 1000 native-objects/query-1 0 yes
+run_one 1000 native-objects/query-1 1 yes
 
 # Run the warmups
-NUM_EVENTS=($(for l in {0..0}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo native-objects/query-$q; done))
-
-run_many NUM_EVENTS QUERY_IDS yes
+NUM_EVENTS=($(for l in 0; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 8; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+exit
 
 # Run the actual queries
 NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
