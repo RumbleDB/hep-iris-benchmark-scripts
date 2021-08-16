@@ -3,6 +3,7 @@
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 INPUT_TABLE_FORMAT="s3://hep-adl-ethz/hep-parquet/native/Run2012B_SingleMu-%i.parquet"
+INPUT_TABLE_FORMAT_SF="s3://hep-adl-ethz/hep-parquet/native-sf/%i/*.parquet"
 NUM_RUNS=3
 
 experiments_dir="$SOURCE_DIR"/experiments
@@ -26,6 +27,11 @@ function run_one {(
 	warmup=$4
 
 	input_table="$(printf $INPUT_TABLE_FORMAT $num_events)"
+	if [ "$num_events" -gt "65536000" ]; then 
+		input_table="$(printf $INPUT_TABLE_FORMAT_SF $(( $num_events / 65536000 )))"
+	fi
+
+	input_table="$(printf $INPUT_TABLE_FORMAT $num_events)"
 
 	run_dir="$experiment_dir/run_$(date +%F-%H-%M-%S.%3N)"
 	mkdir $run_dir
@@ -42,12 +48,10 @@ function run_one {(
 		}
 		EOF
 
-	echo "Before the query to the upper"
 	if [ "$warmup" != "yes" ]; then
 		application_id=$(curl "http://localhost:${stat_port}/api/v1/applications/" | jq -r '[.[]|select(.name=="jsoniq-on-spark")][0]["id"]')
 		entries=$(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length)
 	fi
-	echo "Before the query"
 	(
 		"$query_cmd" -vs --log-cli-level INFO \
 			--freeze-result \
@@ -59,7 +63,6 @@ function run_one {(
 		echo "Exit code: $exit_code"
 		echo $exit_code > "$run_dir"/exit_code.log
 	) 2>&1 | tee "$run_dir"/run.log
-	echo "After the query"
 	if [ "$warmup" != "yes" ]; then
 		entries=$(( $(curl "http://localhost:${stat_port}/api/v1/applications/${application_id}/jobs" | jq length) - $entries ))
 		python3 get_metrics.py ${application_id} ${entries} 0 ${run_dir} --port=${stat_port}
@@ -89,8 +92,8 @@ function run_many() {(
 run_one 1000 native-objects/query-1 1 yes
 
 # Run the warmups
-NUM_EVENTS=($(for l in 0; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 8; do echo native-objects/query-$q; done))
+NUM_EVENTS=($(for l in 17; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1; do echo native-objects/query-$q; done))
 run_many NUM_EVENTS QUERY_IDS no
 exit
 

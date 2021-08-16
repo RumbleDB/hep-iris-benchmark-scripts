@@ -100,6 +100,8 @@ def main(args):
 			json.dump(j, f)
 			f.write("\n")
 
+	print("Done!")
+
 
 if __name__ == '__main__':
 	main(parser.parse_args())
