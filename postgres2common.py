@@ -36,9 +36,9 @@ df.query_id = df.query_id \
 df.loc[df.num_events == 2**16*1000, 'num_events'] = 53446198
 df['system'] = 'postgres'
 df['running_time'] = df.internal_elapsed_time_s
-df['cpu_time'] = df.running_time * df.num_cores
 df['instance_type'] = df.instance_type.combine_first(df.vm_type)
 df['num_cores'] = df.instance_type.apply(num_cores_from_instance_type)
+df.loc[df.num_cores == df.num_cores.min(), 'cpu_time'] = df.running_time
 df['query_price'] = \
     df.instance_type.apply(lambda s: INSTANCE_PRICE_PER_HOUR[s]) \
         * df.running_time / 3600
