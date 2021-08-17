@@ -41,6 +41,7 @@ df = df[df.data_scanned.notna()]
 df = df[df.query_id != '6']
 df = df[df.system != 'athena']
 df.loc[df.num_cores.isna(), 'num_cores'] = 0
+df = df[df.system != 'athena'] # exclude Athena v1
 
 # Average over runs
 df = df.groupby(['system', 'num_cores', 'query_id', 'num_events']).median().reset_index()
@@ -156,9 +157,9 @@ colors = prop_cycle.by_key()['color']
 styles = {
     'asterixdb':         {'facecolor': colors[1], 'label': 'AsterixDB'},
     'athena':            {'facecolor': colors[0], 'label': 'Athena (v1)*'},
-    'athena-v2':         {'facecolor': colors[6], 'label': 'Athena (v2)*'},
-    'bigquery':          {'facecolor': colors[2], 'label': 'BigQuery'},
-    'bigquery-external': {'facecolor': colors[3], 'label': 'BigQuery (external)'},
+    'athena-v2':         {'facecolor': colors[6], 'label': 'Athena*'},
+    'bigquery':          {'facecolor': colors[2], 'label': 'BigQuery (pre-loaded)'},
+    'bigquery-external': {'facecolor': colors[3], 'label': 'BigQuery'},
     'postgres':          {'facecolor': colors[7], 'label': 'Postgres'},
     'presto':            {'facecolor': colors[4], 'label': 'Presto'},
     'rdataframes':       {'facecolor': colors[5], 'label': 'RDataFrames'},
@@ -193,6 +194,7 @@ for i, system in enumerate(systems):
 
 for system in sorted(styles.keys(), key=lambda s: styles[s]['label']):
     if system.startswith('ideal-'): continue
+    if system == 'athena': continue
     bars.append(patches.Patch(**styles[system]))
 
 for i, system in enumerate(['ideal-compr', 'ideal-uncompr']):

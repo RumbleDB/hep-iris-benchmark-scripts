@@ -41,6 +41,7 @@ df = df[df.data_scanned.notna()]
 df = df[df.query_id != '6']
 df = df[df.system != 'athena']
 df.loc[df.num_cores.isna(), 'num_cores'] = 0
+df = df[df.system != 'athena'] # exclude Athena v1
 
 # Average over runs
 df = df.groupby(['system', 'num_cores', 'query_id', 'num_events']).median().reset_index()
@@ -82,9 +83,9 @@ colors = prop_cycle.by_key()['color']
 styles = {
     'asterixdb':         {'color': colors[1], 'label': 'AsterixDB'},
     'athena':            {'color': 'none',    'label': 'Athena (v1)*'},
-    'athena-v2':         {'color': colors[6], 'label': 'Athena (v2)*'},
-    'bigquery':          {'color': colors[2], 'label': 'BigQuery'},
-    'bigquery-external': {'color': colors[3], 'label': 'BigQuery (external)'},
+    'athena-v2':         {'color': colors[6], 'label': 'Athena*'},
+    'bigquery':          {'color': colors[2], 'label': 'BigQuery (pre-loaded)'},
+    'bigquery-external': {'color': colors[3], 'label': 'BigQuery'},
     'postgres':          {'color': colors[7], 'label': 'Postgres'},
     'presto':            {'color': colors[4], 'label': 'Presto'},
     'rdataframes':       {'color': colors[5], 'label': 'RDataFrames'},
