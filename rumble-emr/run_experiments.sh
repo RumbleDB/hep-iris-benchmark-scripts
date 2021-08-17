@@ -94,7 +94,17 @@ NUM_EVENTS=($(for l in 0; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
 run_many NUM_EVENTS QUERY_IDS yes
 
-# Run the SF experiments
+# Run the experiments until SF1
+# Query 6 is discarded at 1000 * 2^12
+NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+
+NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+
+# Run the larger SF experiments
 # Query 8 is dropped after SF4 
 NUM_EVENTS=($(for l in {17..18}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
@@ -119,16 +129,6 @@ run_many NUM_EVENTS QUERY_IDS no
 NUM_EVENTS=($(for l in 22; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1; do echo native-objects/query-$q; done))
 run_many NUM_EVENTS QUERY_IDS no
-exit
 
-# Run the actual queries
-NUM_EVENTS=($(for l in {0..11}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo native-objects/query-$q; done))
-
-run_many NUM_EVENTS QUERY_IDS no
-
-# Discard queries 6
-NUM_EVENTS=($(for l in {12..16}; do echo $((2**$l*1000)); done))
-QUERY_IDS=($(for q in 1 2 3 4 5 7 8; do echo native-objects/query-$q; done))
-
-run_many NUM_EVENTS QUERY_IDS no
+# Summarize experiments
+./summarize_experiment.py ${experiment_dir}
