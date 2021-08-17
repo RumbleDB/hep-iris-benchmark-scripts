@@ -14,6 +14,14 @@ plt.rcParams.update({
     'font.family': 'Linux Libertine',
 })
 
+def export_legend(legend, filename="legend.pdf", expand=[-5,-5,5,5]):
+    fig  = legend.figure
+    fig.canvas.draw()
+    bbox  = legend.get_window_extent()
+    bbox = bbox.from_extents(*(bbox.extents + np.array(expand)))
+    bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
+    fig.savefig(filename, format="pdf", bbox_inches=bbox, pad_inches=0)
+
 ETHa = ( 31/255,  64/255, 122/255) # dark blue
 ETHb = ( 72/255,  90/255,  44/255) # dark green
 ETHc = ( 18/255, 105/255, 176/255) # light blue
@@ -28,6 +36,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input',     help='Input JSON lines file')
 parser.add_argument('-o', '--output',    help='Output PDF file')
 parser.add_argument('-l', '--no_legend', help='Suppress legend from plot',
+                                         action='store_true')
+parser.add_argument('-L', '--legend', 	 help='Export legend',
                                          action='store_true')
 parser.add_argument('-x', '--no_xaxis',  help='Suppress x-axis from plot',
                                          action='store_true')
@@ -214,8 +224,11 @@ if args.no_xaxis:
 if args.no_yaxis:
     ax.set_yticklabels([])
 
-if not args.no_legend:
-    ax.legend(handles=bars, loc='lower center', ncol=3, bbox_to_anchor=(0.44, 1.05))
+if not args.no_legend or args.legend:
+    legend = ax.legend(handles=bars, loc='lower center', ncol=3, bbox_to_anchor=(0.44, 1.08))
 
-plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
+if args.legend:
+    export_legend(legend, args.output)
+else:
+    plt.savefig(args.output, format='pdf', bbox_inches='tight', pad_inches=0)
 plt.close()
