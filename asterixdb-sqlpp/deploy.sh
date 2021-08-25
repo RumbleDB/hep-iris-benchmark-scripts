@@ -30,7 +30,7 @@ do
     (
         (
 
-            id=$(ssh -q ec2-user@$dnsname docker create ingomuellernet/asterixdb-rev-81c32493)
+            id=$(ssh -q ec2-user@$dnsname docker create ingomuellernet/asterixdb:asterixdb-rev-81c32493)
             ssh -q ec2-user@$dnsname \
                 <<-EOF
 				sudo yum install -y java
