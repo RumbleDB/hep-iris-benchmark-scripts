@@ -123,6 +123,9 @@ function deploy_cluster {
 				sudo yum install -y docker
 				sudo service docker start
 				sudo usermod -a -G docker ec2-user
+				
+				# Sane ulimits
+				echo -e "* soft nofile 16384\n* hard nofile 16384" | sudo tee /etc/security/limits.d/99-nfiles.conf
 				EOF
             ) &> "$deploy_dir/deploy_$dnsname.log"
             echo "Done deploying $dnsname."
