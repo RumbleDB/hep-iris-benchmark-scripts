@@ -1,6 +1,15 @@
-# Comparison of Query Processing Systems for High-energy Physics Analysis
+# Benchmark Scripts for *Evaluating Query Languages and Systems for High-Energy Physics Data*
 
-This repository contains benchmarks scripts for running the implementations of High-energy Physics (HEP) analysis queries from the [IRIS HEP benchmark](https://github.com/iris-hep/adl-benchmarks-index) for various general-purpose query processing systems.
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5569049.svg)](https://doi.org/10.5281/zenodo.5569049)
+
+This repository contains benchmarks scripts for running the implementations of High-energy Physics (HEP) analysis queries from the [IRIS HEP benchmark](https://github.com/iris-hep/adl-benchmarks-index) for various general-purpose query processing systems. The results have been published in the following paper:
+
+Dan Graur, Ingo Müller, Mason Proffitt, Ghislain Fourny, Gordon T. Watts, Gustavo Alonso.
+*Evaluating Query Languages and Systems for High-Energy Physics Data.*
+In: PVLDB 15(2), 2022.
+DOI: [10.14778/3489496.3489498](https://doi.org/10.14778/3489496.3489498).
+
+Please cite both, the paper and the software, when citing in academic contexts.
 
 ## Structure of this repository
 

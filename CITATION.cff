@@ -1,0 +1,40 @@
+# YAML 1.2
+---
+authors: 
+  -
+    affiliation: "ETH Zurich"
+    family-names: Graur
+    given-names: Dan
+  -
+    affiliation: "ETH Zurich"
+    family-names: "Müller"
+    given-names: Ingo
+    orcid: "https://orcid.org/0000-0001-8818-8324"
+  -
+    affiliation: "University of Washington"
+    family-names: Proffitt
+    given-names: Mason
+    orcid: "https://orcid.org/0000-0001-8740-8866"
+  -
+    affiliation: "ETH Zurich"
+    family-names: Fourny
+    given-names: Ghislain
+    orcid: "https://orcid.org/0000-0001-8740-8866"
+  -
+    affiliation: "University of Washington"
+    family-names: Watts
+    given-names: "Gordon T."
+  -
+    affiliation: "ETH Zurich"
+    family-names: Alonso
+    given-names: Gustavo
+cff-version: "1.1.0"
+doi: "10.5281/zenodo.5569049"
+message: |
+    "This repository hosts the experiment scripts used for the following paper. Please cite both, the software and the paper, when citing in academic contexts.
+    
+    Dan Graur, Ingo Müller, Mason Proffitt, Ghislain Fourny, Gordon T. Watts, Gustavo Alonso. \"Evaluating Query Languages and Systems for High-Energy Physics Data.\" In: PVLDB 15(2), 2022. DOI: 10.14778/3489496.3489498.
+    "
+repository-code: "https://github.com/RumbleDB/hep-iris-benchmark-scripts"
+title: "Benchmark Scripts for Evaluating Query Languages and Systems for High-Energy Physics Data"
+...
