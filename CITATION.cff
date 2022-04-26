@@ -1,40 +1,46 @@
 # YAML 1.2
 ---
-authors: 
-  -
-    affiliation: "ETH Zurich"
-    family-names: Graur
-    given-names: Dan
-  -
-    affiliation: "ETH Zurich"
-    family-names: "Müller"
-    given-names: Ingo
-    orcid: "https://orcid.org/0000-0001-8818-8324"
-  -
-    affiliation: "University of Washington"
-    family-names: Proffitt
-    given-names: Mason
-    orcid: "https://orcid.org/0000-0001-8740-8866"
-  -
-    affiliation: "ETH Zurich"
-    family-names: Fourny
-    given-names: Ghislain
-    orcid: "https://orcid.org/0000-0001-8740-8866"
-  -
-    affiliation: "University of Washington"
-    family-names: Watts
-    given-names: "Gordon T."
-  -
-    affiliation: "ETH Zurich"
-    family-names: Alonso
-    given-names: Gustavo
-cff-version: "1.1.0"
-doi: "10.5281/zenodo.5569049"
+cff-version: 1.2.0
+title: Benchmark Scripts for "Evaluating Query Languages and Systems for High-Energy Physics Data"
 message: |
-    "This repository hosts the experiment scripts used for the following paper. Please cite both, the software and the paper, when citing in academic contexts.
+    This repository hosts the experiment scripts used for the following paper. Please cite both, the software and the paper, when citing in academic contexts.
     
-    Dan Graur, Ingo Müller, Mason Proffitt, Ghislain Fourny, Gordon T. Watts, Gustavo Alonso. \"Evaluating Query Languages and Systems for High-Energy Physics Data.\" In: PVLDB 15(2), 2022. DOI: 10.14778/3489496.3489498.
-    "
+    Dan Graur, Ingo Müller, Mason Proffitt, Ghislain Fourny, Gordon T. Watts, Gustavo Alonso. "Evaluating Query Languages and Systems for High-Energy Physics Data." In: PVLDB 15(2), 2022. DOI: 10.14778/3489496.3489498.
+type: software
 repository-code: "https://github.com/RumbleDB/hep-iris-benchmark-scripts"
-title: "Benchmark Scripts for Evaluating Query Languages and Systems for High-Energy Physics Data"
+authors:
+  - given-names: Dan
+    family-names: Graur
+    email: dan.graur@inf.ethz.ch
+    affiliation: "ETH Zurich"
+  - given-names: Ingo
+    family-names: "Müller"
+    email: ingo.mueller@inf.ethz.ch
+    affiliation: "ETH Zurich"
+    orcid: "https://orcid.org/0000-0001-8818-8324"
+  - given-names: Mason
+    family-names: Proffitt
+    email: masonLp@uw.edu
+    affiliation: "University of Washington"
+    orcid: "https://orcid.org/0000-0001-8740-8866"
+  - given-names: Ghislain
+    family-names: Fourny
+    email: ghislain.fourny@inf.ethz.ch
+    affiliation: "ETH Zurich"
+    orcid: "https://orcid.org/0000-0001-8740-8866"
+  - given-names: "Gordon T."
+    family-names: Watts
+    email: gwatts@uw.edu
+    affiliation: "University of Washington"
+  - given-names: Gustavo
+    family-names: Alonso
+    email: alonso@inf.ethz.ch
+    affiliation: "ETH Zurich"
+identifiers:
+  - description: The scripts used for the experiments in the paper.
+    type: doi
+    value: "10.5281/zenodo.5569049"
+  - description: The paper describing the results of the experiments.
+    type: doi
+    value: "10.14778/3489496.3489498"
 ...
