@@ -1,0 +1,4 @@
+spark-warehouse/
+plot*.png
+__pycache__/
+/rumble.sh

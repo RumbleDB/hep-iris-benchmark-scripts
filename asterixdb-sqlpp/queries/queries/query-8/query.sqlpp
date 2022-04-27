@@ -1,0 +1,25 @@
+histogram((
+    FROM %(input_table)s AS e
+    LET
+      Lepton = (
+        SELECT m.*, "m" AS `type` FROM e.Muon AS m UNION ALL
+        SELECT p.*, "e" AS `type` FROM e.Electron AS p),
+      triLepton = (
+        FROM Lepton AS l1 AT idx1,
+             Lepton AS l2 AT idx2
+        WHERE
+          idx1 < idx2 AND
+          l1.charge != l2.charge AND
+          l1.`type` = l2.`type`
+        SELECT
+          l1, l2, (
+            FROM Lepton AS l3 AT idx3
+            WHERE idx3 != idx1 AND idx3 != idx2
+            SELECT VALUE l3
+            ORDER BY l3.pt DESC)[0] AS l3
+        ORDER BY ABS(91.2 - AddPtEtaPhiM2(l1, l2).mass))[0]
+    WHERE triLepton.l3 IS NOT NULL
+    SELECT VALUE
+      SQRT(2 * MET.pt * triLepton.l3.pt *
+           (1.0 - COS(DeltaPhi(MET, triLepton.l3))))),
+  15, 250, 100)

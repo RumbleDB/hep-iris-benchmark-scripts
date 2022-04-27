@@ -1,0 +1,116 @@
+CREATE TYPE metType IF NOT EXISTS AS {
+    pt:             float,
+    phi:            float,
+    sumet:          float,
+    significance:   float,
+    CovXX:          float,
+    CovXY:          float,
+    CovYY:          float
+};
+
+CREATE TYPE hltType IF NOT EXISTS AS {
+    IsoMu24_eta2p1:                 boolean,
+    IsoMu24:                        boolean,
+    IsoMu17_eta2p1_LooseIsoPFTau20: boolean
+};
+
+CREATE TYPE pvType IF NOT EXISTS AS {
+    npvs:   int,
+    x:      float,
+    y:      float,
+    z:      float
+};
+
+CREATE TYPE muonType IF NOT EXISTS AS {
+    pt:             float,
+    eta:            float,
+    phi:            float,
+    mass:           float,
+    charge:         int,
+    pfRelIso03_all: float,
+    pfRelIso04_all: float,
+    tightId:        boolean,
+    softId:         boolean,
+    dxy:            float,
+    dxyErr:         float,
+    dz:             float,
+    dzErr:          float,
+    jetIdx:         int,
+    genPartIdx:     int
+};
+
+CREATE TYPE electronType IF NOT EXISTS AS {
+    pt:             float,
+    eta:            float,
+    phi:            float,
+    mass:           float,
+    charge:         int,
+    pfRelIso03_all: float,
+    dxy:            float,
+    dxyErr:         float,
+    dz:             float,
+    dzErr:          float,
+    cutBasedId:     boolean,
+    pfId:           boolean,
+    jetIdx:         int,
+    genPartIdx:     int
+};
+
+CREATE TYPE photonType IF NOT EXISTS AS {
+    pt:             float,
+    eta:            float,
+    phi:            float,
+    mass:           float,
+    charge:         int,
+    pfRelIso03_all: float,
+    jetIdx:         int,
+    genPartIdx:     int
+};
+
+CREATE TYPE jetType IF NOT EXISTS AS {
+    pt:     float,
+    eta:    float,
+    phi:    float,
+    mass:   float,
+    puId:   boolean,
+    btag:   float
+};
+
+CREATE TYPE tauType IF NOT EXISTS AS {
+    pt:                 float,
+    eta:                float,
+    phi:                float,
+    mass:               float,
+    charge:             int,
+    decayMode:          int,
+    relIso_all:         float?,  -- XXX: This attribute contains null values. Not sure why...
+    jetIdx:             int,
+    genPartIdx:         int,
+    idDecayMode:        boolean,
+    idIsoRaw:           float,
+    idIsoVLoose:        boolean,
+    idIsoLoose:         boolean,
+    idIsoMedium:        boolean,
+    idIsoTight:         boolean,
+    idAntiEleLoose:     boolean,
+    idAntiEleMedium:    boolean,
+    idAntiEleTight:     boolean,
+    idAntiMuLoose:      boolean,
+    idAntiMuMedium:     boolean,
+    idAntiMuTight:      boolean
+};
+
+CREATE TYPE eventTypeIndexed IF NOT EXISTS AS {
+    _uuid:              uuid,
+    `run`:              int,
+    luminosityBlock:    bigint,
+    event:              bigint,
+    MET:                metType,
+    HLT:                hltType,
+    PV:                 pvType,
+    Muon:               [ muonType ],
+    Electron:           [ electronType ],
+    Photon:             [ photonType ],
+    Jet:                [ jetType ],
+    Tau:                [ tauType ]
+};

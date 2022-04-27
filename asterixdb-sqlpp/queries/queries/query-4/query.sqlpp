@@ -1,0 +1,7 @@
+histogram((
+    SELECT VALUE MET.pt
+    FROM %(input_table)s AS e
+    WHERE
+      ARRAY_LENGTH((SELECT * FROM e.Jet AS j
+                    WHERE j.pt > 40)) > 1),
+  0, 2000, 100);

@@ -1,0 +1,2 @@
+histogram(
+  (SELECT VALUE j.pt FROM %(input_table)s AS e, e.Jet AS j), 15, 60, 100)

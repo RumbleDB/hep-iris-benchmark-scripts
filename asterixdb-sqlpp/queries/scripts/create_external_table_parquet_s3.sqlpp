@@ -1,0 +1,11 @@
+CREATE EXTERNAL DATASET %(dataset_name)s(%(type_name)s)
+USING S3 (
+  ("accessKeyId"="%(access_key_id)s"),
+  ("secretAccessKey"="%(secret_access_key)s"),
+  ("region"="%(bucket_region)s"),
+  ("serviceEndpoint"="https://s3.%(bucket_region)s.amazonaws.com:443"),
+  ("container"="%(bucket_name)s"),
+  ("definition"="%(external_path)s"),
+  ("format"="parquet"),
+  ("include"="*.parquet")
+);

@@ -1,0 +1,12 @@
+histogram((
+    FROM %(input_table)s AS e
+    LET triJet = (
+      FROM e.Jet AS j1 AT idx1,
+           e.Jet AS j2 AT idx2,
+           e.Jet AS j3 AT idx3
+      WHERE idx1 < idx2 AND idx2 < idx3
+      SELECT j1, j2, j3, AddPtEtaPhiM3(j1, j2, j3) AS j123
+      ORDER BY abs(j123.mass - 172.5) ASC)[0]
+    WHERE triJet IS NOT NULL
+    SELECT VALUE triJet.j123.pt),
+  15, 40, 100)

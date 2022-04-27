@@ -1,0 +1,5 @@
+histogram((
+    SELECT VALUE j.pt
+    FROM %(input_table)s AS e, e.Jet AS j
+    WHERE ABS(j.eta) < 1),
+  15, 60, 100)

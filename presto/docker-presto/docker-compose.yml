@@ -1,0 +1,73 @@
+version: "3.7"
+services:
+  mysql:
+    image: mysql:5.7.33
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    expose:
+      - "3306"
+    volumes:
+      - ./runtime/mysql:/docker-entrypoint-initdb.d:ro
+
+  presto:
+    image: ingomuellernet/presto:0.258
+    depends_on:
+      - mysql
+      - hive
+      - datanode
+      - namenode
+    volumes:
+      - ./runtime/presto/copy.d:/scripts/copy.d:ro
+      - ./runtime/presto/run.d:/scripts/run.d:ro
+    ports:
+      - "8080:8080"
+    command: ["wait-for-it", "hive:9083", "-t", "60",
+              "--", "/opt/presto/bin/launcher", "run"]
+
+  presto-worker:
+    image: ingomuellernet/presto:0.258
+    depends_on:
+      - presto
+    volumes:
+      - ./runtime/presto-worker/copy.d:/scripts/copy.d:ro
+      - ./runtime/presto-worker/run.d:/scripts/run.d:ro
+    expose:
+      - "8080"
+    ports:
+      - "35000-35999:8080"
+    command: ["wait-for-it", "presto:8080", "-t", "60",
+              "--", "/opt/presto/bin/launcher", "run"]
+
+  namenode:
+    image: ingomuellernet/presto:0.258
+    volumes:
+      - ./data/:/data/:ro
+    expose:
+      - "8020"
+    ports:
+      - "9870:9870"
+    command: ["hdfs", "namenode"]
+
+  datanode:
+    image: ingomuellernet/presto:0.258
+    depends_on:
+      - namenode
+    ports:
+      - "36000-36999:9864"
+    expose:
+      - "9866"
+      - "9867"
+      - "46759"
+    command: ["wait-for-it", "datanode:8020", "-t", "10",
+              "--", "hdfs", "datanode"]
+
+  hive:
+    image: ingomuellernet/presto:0.258
+    depends_on:
+      - mysql
+      - namenode
+      - datanode
+    ports:
+      - "9083:9083"
+    command: ["wait-for-it", "mysql:3306", "-t", "30",
+              "--", "/scripts/hive-entrypoint.sh"]

@@ -1,0 +1,14 @@
+histogram((
+    FROM %(input_table)s AS e
+    LET GoodJet = (
+      FROM e.Jet AS j
+      WHERE
+        j.pt > 30 AND
+        NOT EXISTS (SELECT * FROM e.Muon AS p
+                    WHERE p.pt > 10 AND DeltaR(p, j) < 0.4) AND
+        NOT EXISTS (SELECT * FROM e.Electron AS p
+                    WHERE p.pt > 10 AND DeltaR(p, j) < 0.4)
+      SELECT VALUE j)
+    WHERE array_length(GoodJet) > 0
+    SELECT VALUE (SELECT VALUE sum(j.pt) FROM GoodJet AS j)[0]),
+  15, 200, 100)

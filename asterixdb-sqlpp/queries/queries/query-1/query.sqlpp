@@ -1,0 +1,1 @@
+histogram((SELECT VALUE MET.pt FROM %(input_table)s), 0, 2000, 100)

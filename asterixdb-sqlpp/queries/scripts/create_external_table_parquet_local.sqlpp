@@ -1,0 +1,5 @@
+CREATE EXTERNAL DATASET %(dataset_name)s(%(type_name)s)
+USING hdfs (
+  ("path"="%(external_path)s"),
+  ("input-format"="parquet-input-format")
+);

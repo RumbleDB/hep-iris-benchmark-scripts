@@ -1,0 +1,85 @@
+DECLARE FUNCTION histogramBin(v, lo, hi, bin_width) {
+  FLOOR((
+    CASE
+      WHEN v < lo THEN lo - bin_width / 4
+      WHEN v > hi THEN hi + bin_width / 4
+      ELSE v
+    END - (lo MOD bin_width)) / bin_width) * bin_width
+      + bin_width / 2 + (lo MOD bin_width)
+};
+DECLARE FUNCTION histogram(values, lo, hi, num_bins) {
+  FROM values AS v
+  GROUP BY histogramBin(v, lo, hi, (hi - lo) / num_bins) AS x
+  SELECT x, count(*) AS y
+  ORDER BY x
+};
+DECLARE FUNCTION Square(x) { x*x };
+DECLARE FUNCTION DeltaPhiHelper(delta_phi) {
+  CASE
+    WHEN delta_phi < -PI() THEN delta_phi + 2 * PI()
+    WHEN delta_phi >  PI() THEN delta_phi - 2 * PI()
+    ELSE delta_phi
+  END
+};
+DECLARE FUNCTION DeltaPhi(p1, p2) {
+  DeltaPhiHelper((p1.phi - p2.phi) MOD (2*PI()))
+};
+Declare FUNCTION DeltaR(p1, p2) {
+  SQRT(Square(p1.eta - p2.eta) + Square(DeltaPhi(p1, p2)))
+};
+DECLARE FUNCTION computeInvariantMass(p1, p2) {
+  SQRT(2 * p1.pt * p2.pt * (COSH(p1.eta - p2.eta) - COS(p1.phi - p2.phi)))
+};
+DECLARE FUNCTION RhoZ2Eta(rho, z) {
+  LN(z/rho + SQRT(z/rho * z/rho + 1.0))
+};
+DECLARE FUNCTION PtEtaPhiM2PxPyPzE(pepm) {
+  {
+    "x": pepm.pt * COS(pepm.phi),
+    "y": pepm.pt * SIN(pepm.phi),
+    "z": pepm.pt * SINH(pepm.eta),
+    "t": SQRT((pepm.pt * COSH(pepm.eta)) * (pepm.pt * COSH(pepm.eta)) +
+              pepm.mass * pepm.mass)
+  }
+};
+DECLARE FUNCTION PxPyPzE2PtEtaPhiM(xyzt) {
+  {
+    "pt": SQRT(xyzt.x*xyzt.x + xyzt.y*xyzt.y),
+    "eta": RhoZ2Eta(SQRT(xyzt.x*xyzt.x + xyzt.y*xyzt.y), xyzt.z),
+    "phi": CASE WHEN (xyzt.x = 0.0 AND xyzt.y = 0.0) THEN 0
+           ELSE atan2(xyzt.y, xyzt.x) END,
+    "mass": SQRT(xyzt.t * xyzt.t -
+                 xyzt.x * xyzt.x -
+                 xyzt.y * xyzt.y -
+                 xyzt.z * xyzt.z)
+  }
+};
+DECLARE FUNCTION AddPxPyPzE2(xyzt1, xyzt2) {
+  {
+    "x": xyzt1.x + xyzt2.x,
+    "y": xyzt1.y + xyzt2.y,
+    "z": xyzt1.z + xyzt2.z,
+    "t": xyzt1.t + xyzt2.t
+  }
+};
+DECLARE FUNCTION AddPxPyPzE3(xyzt1, xyzt2, xyzt3) {
+  {
+    "x": xyzt1.x + xyzt2.x + xyzt3.x,
+    "y": xyzt1.y + xyzt2.y + xyzt3.y,
+    "z": xyzt1.z + xyzt2.z + xyzt3.z,
+    "t": xyzt1.t + xyzt2.t + xyzt3.t
+  }
+};
+DECLARE FUNCTION AddPtEtaPhiM2(pepm1, pepm2) {
+  PxPyPzE2PtEtaPhiM(
+    AddPxPyPzE2(
+      PtEtaPhiM2PxPyPzE(pepm1),
+      PtEtaPhiM2PxPyPzE(pepm2)))
+};
+DECLARE FUNCTION AddPtEtaPhiM3(pepm1, pepm2, pepm3) {
+  PxPyPzE2PtEtaPhiM(
+    AddPxPyPzE3(
+      PtEtaPhiM2PxPyPzE(pepm1),
+      PtEtaPhiM2PxPyPzE(pepm2),
+      PtEtaPhiM2PxPyPzE(pepm3)))
+};

@@ -1,0 +1,7 @@
+CREATE EXTERNAL DATASET %(dataset_name)s(%(type_name)s)
+USING hdfs (
+  ("hdfs"="%(hdfs_server)s"),
+  ("path"="%(external_path)s"),
+  ("input-format"="text-input-format"),
+  ("format"="json")
+);
