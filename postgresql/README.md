@@ -11,3 +11,4 @@ In order to execute the HEP ADL benchmark queries with PostgreSQL one needs to f
 1. Study or plot the above-mentioned  `summary.jsonl` file to see the query execution times
     * For the query execution time, one can scan the `total_exec_time` entries
     * For the number of read bytes, one can scan the `bytes_read` entry 
+1. Terminate the cluster by running the `terminate.sh` script
