@@ -30,12 +30,90 @@ bigquery/
 
 ## Running experiments
 
+### Prerequisites
+
+Before starting, the AWS CLI tool needs to be installed locally. Please follow [these instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) in order to install the tool. 
+
+Make sure to create a configuration file called `config.sh` in the `common/` folder. The file should have the following structure:
+
+```
+#!/usr/bin/env bash
+SSH_KEY_NAME="<YOUR_AWS_KEY_NAME>"
+INSTANCE_PROFILE="<YOUR_PREFERRED_ROLE>"
+```
+
+The value of `SSH_KEY_NAME` should be filled in with the name of a Public-Private Key Pair generated within AWS.
+
+As an example, for `INSTANCE_PROFILE`, we created a role that affects the `AmazonElasticMapReduceforEC2Role` policy and has the following configuration. We then used the name of this role as the value of `INSTANCE_PROFILE`. 
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Resource": "*",
+            "Action": [
+                "cloudwatch:*",
+                "dynamodb:*",
+                "ec2:Describe*",
+                "elasticmapreduce:Describe*",
+                "elasticmapreduce:ListBootstrapActions",
+                "elasticmapreduce:ListClusters",
+                "elasticmapreduce:ListInstanceGroups",
+                "elasticmapreduce:ListInstances",
+                "elasticmapreduce:ListSteps",
+                "kinesis:CreateStream",
+                "kinesis:DeleteStream",
+                "kinesis:DescribeStream",
+                "kinesis:GetRecords",
+                "kinesis:GetShardIterator",
+                "kinesis:MergeShards",
+                "kinesis:PutRecord",
+                "kinesis:SplitShard",
+                "rds:Describe*",
+                "s3:*",
+                "sdb:*",
+                "sns:*",
+                "sqs:*",
+                "glue:CreateDatabase",
+                "glue:UpdateDatabase",
+                "glue:DeleteDatabase",
+                "glue:GetDatabase",
+                "glue:GetDatabases",
+                "glue:CreateTable",
+                "glue:UpdateTable",
+                "glue:DeleteTable",
+                "glue:GetTable",
+                "glue:GetTables",
+                "glue:GetTableVersions",
+                "glue:CreatePartition",
+                "glue:BatchCreatePartition",
+                "glue:UpdatePartition",
+                "glue:DeletePartition",
+                "glue:BatchDeletePartition",
+                "glue:GetPartition",
+                "glue:GetPartitions",
+                "glue:BatchGetPartition",
+                "glue:CreateUserDefinedFunction",
+                "glue:UpdateUserDefinedFunction",
+                "glue:DeleteUserDefinedFunction",
+                "glue:GetUserDefinedFunction",
+                "glue:GetUserDefinedFunctions"
+            ]
+        }
+    ]
+}
+```
+
+### Experiment Workflow
+
 The flow for running the experiments is roughly the following:
 
 1. Follow the setup procedure of each system as explained in the respective git repositories. In particular, convert and upload the benchmark data where required.
 1. For self-managed systems, start the resources on AWS EC2 using `deploy.sh` and set up or upload the data on these resources using `upload.sh` of the respective system.
 1. Run queries in one of the following ways:
-   * Run individual queries using the `test_queries.py` script or (similar). The `deploy.sh` of the self-managed systems open a tunnel to the deployed EC2 instances, such that you can use the local script with the cloud resources.
+   * Run individual queries using the `test_queries.py` script or (similar). The `deploy.sh` of the self-managed systems opens a tunnel to the deployed EC2 instances, such that you can use the local script with the cloud resources.
    * Modify and run `run_experiments.sh` to run a batch of queries and trace its results.
 1. Terminate the deployed resources with `terminate.sh`.
 1. Run `make -f path/to/common/make.mk -C results/results_date-of-experiment/` to parse the trace files and produce `result.json` with the statistics of all runs.
