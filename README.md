@@ -42,7 +42,16 @@ SSH_KEY_NAME="<YOUR_AWS_KEY_NAME>"
 INSTANCE_PROFILE="<YOUR_PREFERRED_ROLE>"
 ```
 
-The value of `SSH_KEY_NAME` should be filled in with the name of a Public-Private Key Pair generated within AWS.
+The value of `SSH_KEY_NAME` should be filled in with the name of a Key Pair from AWS. The deployed cluster will require that key when being accessed via `ssh`. We highly recommend you use your default ssh key in AWS, as this will save a lot of effort when using our scripts (our scripts employ the default system ssh key when `ssh`-ing into AWS VMs). To import your default ssh key into AWS, follow these steps:
+
+1. Locate your default ssh key (this is usually in `~/.ssh/`)
+1. Open the default key's `.pub` file and copy its contents to the clipboard
+1. In the `AWS Console`, go to the `EC2 Dashboard`, and click on the `Key Pairs` button
+1. In the new window, there will be an `Actions` button in the top right corner. Click on this button and select the `Import key pair` option.
+1. Provide a name for your key, and paste the contents of your clipboard into the big text box on this page (alternatively, you can upload the `.pub` file directly via the `Browse` option).
+1. Finalize the process by clicking the `Import key pair` button at the bottom of the page. 
+
+Alternatively, you can use a different key, but this will require that you modify the scripts where remote access is used such that the `-i` option is used to point to the relevant identity file. 
 
 As an example, for `INSTANCE_PROFILE`, we created a role that affects the `AmazonElasticMapReduceforEC2Role` policy and has the following configuration. We then used the name of this role as the value of `INSTANCE_PROFILE`. 
 
