@@ -3,7 +3,7 @@ import glob
 import json
 import os
 
-BLOCK_SIZE_BYTES = 8 * 2 ** 10  # 8kB
+BLOCK_SIZE_BYTES = 8 * 2 ** 10  # 8kiB
 
 
 parser = argparse.ArgumentParser(description='Postprocess experiments for PostgreSQL.')

@@ -16,7 +16,7 @@ dnsnames=($(discover_dnsnames "$deploy_dir"))
 QUERY_CMD="docker exec psql_deploy python3 /data/queries/test_queries.py"
 
 # Create result dir
-experiment_dir="$EXP_DIR/experiment_$(date +%F-%H-%M-%S)"
+experiment_dir="$EXP_DIR/postgres/experiment_$(date +%F-%H-%M-%S)"
 mkdir -p $experiment_dir
 
 # Store instance information
@@ -92,13 +92,6 @@ function run_many() {(
 )}
 
 
-# NUM_EVENTS=($(for l in 2; do echo $((2**$l*1000)); done))
-# QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
-# run_many NUM_EVENTS QUERY_IDS no
-# python3 postprocess_statistics.py ${experiment_dir}
-# exit
-
-
 NUM_EVENTS=(1000)
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
 run_many NUM_EVENTS QUERY_IDS yes
@@ -123,7 +116,10 @@ NUM_EVENTS=($(for l in {16..16}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4; do echo query-$q; done))
 run_many NUM_EVENTS QUERY_IDS no
 
-# Queries 1 and 2 can go past the SF1 mark
+# Query 1 can go past the SF1 mark
+NUM_EVENTS=($(for l in {17..22}; do echo $((2**$l*1000)); done))
+QUERY_IDS=( query-1 )
+run_many NUM_EVENTS QUERY_IDS no
 
 # Finally post-process the results
 python3 postprocess_statistics.py ${experiment_dir}
