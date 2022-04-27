@@ -24,7 +24,7 @@ echo "Partition count: " ${NUM_PARTITIONS_PER_NODE}
 . "$SCRIPT_PATH/../common/ec2-helpers.sh"
 
 # Deploy cluster
-experiments_dir="$SCRIPT_PATH/../experiments"
+experiments_dir="$SCRIPT_PATH/../experiments/postgres"
 mkdir -p "$experiments_dir"
 deploy_cluster "$experiments_dir" $NUM_INSTANCES $INSTANCE_TYPE
 

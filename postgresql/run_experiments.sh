@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-EXP_DIR="${SOURCE_DIR}/../experiments"
+EXP_DIR="${SOURCE_DIR}/../experiments/postgres"
 
 INPUT_TABLE_FORMAT="Run2012B_SingleMu_%i"
 NUM_RUNS=3
@@ -16,7 +16,7 @@ dnsnames=($(discover_dnsnames "$deploy_dir"))
 QUERY_CMD="docker exec psql_deploy python3 /data/queries/test_queries.py"
 
 # Create result dir
-experiment_dir="$EXP_DIR/postgres/experiment_$(date +%F-%H-%M-%S)"
+experiment_dir="$EXP_DIR/experiment_$(date +%F-%H-%M-%S)"
 mkdir -p $experiment_dir
 
 # Store instance information
