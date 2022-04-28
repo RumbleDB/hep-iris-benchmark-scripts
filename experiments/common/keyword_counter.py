@@ -13,8 +13,10 @@ parser = argparse.ArgumentParser(
 parser.add_argument('path', help='Path to the queries.')
 parser.add_argument('--extension', type=str, default="jq",
                     help="The extension of the query files. Can be 'jq', 'sql', 'sqlpp', 'C'")
-parser.add_argument('--csv', action="store_true")
-parser.add_argument('--avg-clauses', action="store_true")
+parser.add_argument('--csv', action="store_true", help="If present, "
+                    "dumps the summary of each query to csv.")
+parser.add_argument('--avg-clauses', action="store_true", help="If present, "
+                    "prints the aggregations of each statistic.")
 args = parser.parse_args()
 
 
