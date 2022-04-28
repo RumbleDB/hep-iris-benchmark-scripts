@@ -2,7 +2,7 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 if ! [ -f "$SOURCE_DIR/config.sh" ]
 then
-    echo "Config file config.sh not found." >&2
+    echo "Config file config.sh not found. You probably forgot to add a config.sh file to your common folder. See README for more details." >&2
     exit 1
 else
     . "$SOURCE_DIR/config.sh"
