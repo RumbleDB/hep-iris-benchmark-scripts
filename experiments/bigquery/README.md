@@ -5,7 +5,7 @@
 Follow the instructions in the README of the git submodule under `queries` about:
 
 1. Installation of requirements and set-up of the cloud,
-1. Uploading of the native data set from the `dataset` folder from this repository to internal and/or external storage, and
+1. Uploading of the native datasets from the [`dataset`](../../dataset) folder from this repository to internal and/or external storage, and
 1. Running the test query to verify the set-up.
 
 ## Running experiments
