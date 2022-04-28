@@ -32,13 +32,7 @@ common/
 
 ## Data
 
-### TODO(Ingo): Produce instructions on generating the data
-
-We also provide a script for generating the large scale factors for the `parquet` version of the dataset by using the base dataset several times. The script is located in `common/generate_aws_data.sh` You do not need to run this script unless you wish to do so (make sure to change the bucket addresses), as it is just for demonstrative purposes. 
-
-### Available Datasets 
-
-Our data is stored in S3 at the bucket address `s3://hep-adl-ethz`. There are several flavors of the dataset, each stored in their own directories:
+Our data is stored in S3 at the bucket address `s3://hep-adl-ethz`. For more information on how these datasets are obtained, please see the [`datasets/README.md`](datasets/README.md). There are several flavors of the dataset, each stored in their own directories:
 
 * `hep-csv/` - contains the `csv` version of the dataset.
 * `hep-parquet/` - contains the `parquet` version of the dataset.
@@ -55,7 +49,7 @@ In these folders you will often see several other subdirectories:
 
 Before starting, the AWS CLI tool needs to be installed locally. Please follow [these instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) in order to install the tool. 
 
-Make sure to create a configuration file called `config.sh` in the `common/` folder. The file should have the following structure:
+Make sure to create a configuration file called `config.sh` in the `experiments/common/` folder. The file should have the following structure:
 
 ```
 #!/usr/bin/env bash
@@ -193,5 +187,5 @@ optional arguments:
 An example use of this script could be:
 
 ```
-python keyword_counter.py --extension="sql" --avg-clauses experiments/athena/queries/queries
+python keyword_counter.py --extension="sql" --avg-clauses path/to/experiments-scripts/experiments/athena/queries/queries
 ```
