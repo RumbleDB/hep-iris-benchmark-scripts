@@ -96,7 +96,7 @@ def main(args):
 				print(f" > Error: {e}", file=sys.stderr)
 				print(f" > Ignore this error in case this was a warmup run", file=sys.stderr)
 
-	with open(os.path.join(top_dir, "summary.json"), "w") as f:
+	with open(os.path.join(top_dir, "summary.jsonl"), "w") as f:
 		for j in summary:
 			json.dump(j, f)
 			f.write("\n")
