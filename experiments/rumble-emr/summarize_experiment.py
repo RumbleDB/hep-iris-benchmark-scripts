@@ -94,6 +94,7 @@ def main(args):
 			except Exception as e:
 				print(f"Encountered an error at {subdir}", file=sys.stderr)
 				print(f" > Error: {e}", file=sys.stderr)
+				print(f" > Ignore this error in case this was a warmup run", file=sys.stderr)
 
 	with open(os.path.join(top_dir, "summary.json"), "w") as f:
 		for j in summary:
