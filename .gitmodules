@@ -1,24 +1,24 @@
 [submodule "presto/docker-presto"]
-	path = presto/docker-presto
+	path = experiments/presto/docker-presto
 	url = ../docker-presto.git
 [submodule "presto/queries"]
-	path = presto/queries
+	path = experiments/presto/queries
 	url = ../iris-hep-benchmark-presto.git
 [submodule "rumble/queries"]
-	path = rumble/queries
+	path = experiments/rumble/queries
 	url = ../iris-hep-benchmark-rumble.git
 [submodule "athena/queries"]
-	path = athena/queries
+	path = experiments/athena/queries
 	url = ../iris-hep-benchmark-athena.git
 [submodule "bigquery/queries"]
-	path = bigquery/queries
+	path = experiments/bigquery/queries
 	url = ../iris-hep-benchmark-bigquery.git
 [submodule "rdataframes/queries"]
-	path = rdataframes/queries
+	path = experiments/rdataframes/queries
 	url = git@github.com:masonproffitt/opendata-benchmarks.git
 [submodule "asterixdb-sqlpp/queries"]
-	path = asterixdb-sqlpp/queries
+	path = experiments/asterixdb-sqlpp/queries
 	url = ../iris-hep-benchmark-sqlpp.git
 [submodule "postgresql/queries"]
-	path = postgresql/queries
+	path = experiments/postgresql/queries
 	url = ../iris-hep-benchmark-postgresql.git
