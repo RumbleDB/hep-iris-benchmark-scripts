@@ -11,7 +11,9 @@ To produce all files, simply run:
 make
 ```
 
-To get a first plausibility check, run the following command:
+To get a first plausibility check, run the following command (this requires
+[`parquet-tools`](https://pypi.org/project/parquet-tools/), see
+[`requirements.txt`](requirements.txt)):
 
 ```bash
 for file in *.parquet; \
