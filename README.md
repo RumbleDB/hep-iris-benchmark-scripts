@@ -147,3 +147,25 @@ The flow for running the experiments is roughly the following:
    * Modify and run `run_experiments.sh` to run a batch of queries and trace its results.
 1. Terminate the deployed resources with `terminate.sh`.
 1. Run `make -f path/to/common/make.mk -C results/results_date-of-experiment/` to parse the trace files and produce `result.json` with the statistics of all runs.
+
+### Running Different VM Sizes Sweeps
+
+Self-deployed systems are evaluated in the paper by running the ADL benchmark queries at a fixed scale factor for the data, while sweeping the VM size. For these experiments we chose SF1. We do not provide scripts for this, as such an experiment can be expressed with a one-line bash command. We do provide an example of such a command line below:
+
+```
+for x in 16x 12x 8x 4x 2x x ""; do ./deploy.sh 2 m5d.${x}large && ./upload.sh && ./run_experiments.sh; ./terminate.sh; done
+```  
+
+Some systems, such as `postgresql` or `rumble` and `rumble-emr` do not posses or require an `upload.sh` script. Also note that some `run_experiments.sh` scripts might feature different parameters that one can use to change the dynamics of the experiments.
+
+You should note that you should fix the scale of the data when doing the experiment (otherwise the experiment will sweep both through the different scale factors for the data and the different VM sizes). To do so, make sure to change the setup at the end of the `run_experiments.sh` scripts in order to schedule only the intended scale factor. For instance, the following snippet will ensure only SF1 is being executed (which is the scale we used for the sweep experiments in our paper):  
+
+```
+...
+NUM_EVENTS=($(for l in {16..16}; do echo $((2**$l*1000)); done))
+QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo query-$q; done))
+run_many NUM_EVENTS QUERY_IDS no
+...
+```
+
+Note that there might be different patterns for the query names depending on the system. 
