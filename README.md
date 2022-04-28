@@ -26,7 +26,28 @@ athena/
 bigquery/
     ...
 ...
+common/
+    ...
 ```
+
+## Data
+
+### TODO(Ingo): Produce instructions on generating the data
+
+We also provide a script for generating the large scale factors for the `parquet` version of the dataset by using the base dataset several times. The script is located in `common/generate_aws_data.sh` You do not need to run this script unless you wish to do so (make sure to change the bucket addresses), as it is just for demonstrative purposes. 
+
+### Available Datasets 
+
+Our data is stored in S3 at the bucket address `s3://hep-adl-ethz`. There are several flavors of the dataset, each stored in their own directories:
+
+* `hep-csv/` - contains the `csv` version of the dataset.
+* `hep-parquet/` - contains the `parquet` version of the dataset.
+* `hep-root/` - contains the `root` versions of the dataset.
+
+In these folders you will often see several other subdirectories:
+
+* `native` - contains the version of the dataset where the data is readily re-structured into object for each type of particle.
+* `original` - contains the original version of the dataset where the particles are completely dis-assembled into their fundamental property (one column per property)
 
 ## Running experiments
 
