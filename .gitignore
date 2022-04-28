@@ -3,5 +3,5 @@ experiments/**/experiments/*
 experiments/common/config.sh
 experiments/rumble-emr/experiments/*
 experiments/rumble-emr/logs/*
-experiments/rumble/environment.sh
+experiments/obsolete_rumble/environment.sh
 **/__pycache__

@@ -5,7 +5,7 @@
 	path = experiments/presto/queries
 	url = ../iris-hep-benchmark-presto.git
 [submodule "rumble/queries"]
-	path = experiments/rumble/queries
+	path = experiments/obsolete_rumble/queries
 	url = ../iris-hep-benchmark-rumble.git
 [submodule "athena/queries"]
 	path = experiments/athena/queries

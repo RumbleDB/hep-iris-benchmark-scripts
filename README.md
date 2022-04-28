@@ -189,3 +189,7 @@ An example use of this script could be:
 ```
 python keyword_counter.py --extension="sql" --avg-clauses path/to/experiments-scripts/experiments/athena/queries/queries
 ```
+
+## Mentions
+
+Note that for the RumbleDB experiments we employed the `experiments/rumble-emr` scripts, and not the `experiments/obsolete_rumble` scripts. We include the latter for reference, but they serve not purpose for evaluation. 
