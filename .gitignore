@@ -1,1 +1,7 @@
+.gitignore
 experiments/*
+common/config.sh
+rumble-emr/experiments/*
+rumble-emr/logs/*
+**/__pycache__
+
