@@ -2,15 +2,16 @@
 
 SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
+# Get the parameters
+NUM_INSTANCES=${1:-1}
+INSTANCE_TYPE=${2:-"m5d.xlarge"}
+PORT_OFFSET=${3:-0}  # Useful when running multiple clusters in parallel
+
 # Load common functions
 . "$SCRIPT_PATH/../common/ec2-helpers.sh"
-. "$SCRIPT_PATH/conf.sh"
-
-NUM_INSTANCES=1
-INSTANCE_TYPE=${instance}
 
 # Deploy cluster
-experiments_dir="$SCRIPT_PATH/../experiments"
+experiments_dir="$SCRIPT_PATH/../experiments/rumbledb"
 mkdir -p "$experiments_dir"
 deploy_cluster "$experiments_dir" $NUM_INSTANCES $INSTANCE_TYPE
 
@@ -34,7 +35,7 @@ echo "Done deploying machines."
 # Set up SSH tunnel to head node
 for p in 4040 8001 18080
 do  
-	ssh -L $(( ${p} + ${offset} )):localhost:${p} -N -q ec2-user@${dnsname[0]} &
+	ssh -L $(( ${p} + ${PORT_OFFSET} )):localhost:${p} -N -q ec2-user@${dnsname[0]} &
 	tunnelpid=$!
 	echo "$tunnelpid" >> "$deploy_dir/tunnel.pid"
 done

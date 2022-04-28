@@ -2,16 +2,18 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+PORT_OFFSET=${1:-0}  # Useful when running multiple clusters in parallel
+
 INPUT_TABLE_FORMAT="/data/native/Run2012B_SingleMu-%i.parquet"
 NUM_RUNS=3
 
-experiments_dir="$SOURCE_DIR"/experiments
+experiments_dir="$SOURCE_DIR"/experiments/rumbledb
 query_cmd="$SOURCE_DIR"/queries/test_queries.py
 
 . "$SOURCE_DIR/conf.sh"
 
-stat_port=$(( 4040 + ${offset} ))
-query_port=$(( 8001 + ${offset} ))
+stat_port=$(( 4040 + ${PORT_OFFSET} ))
+query_port=$(( 8001 + ${PORT_OFFSET} ))
 
 # Create result dir
 experiment_dir="$experiments_dir/experiment_$(date +%F-%H-%M-%S)"
@@ -89,7 +91,6 @@ run_one 1000 native-objects/query-1 0 yes
 # Run the warmups
 NUM_EVENTS=($(for l in {0..0}; do echo $((2**$l*1000)); done))
 QUERY_IDS=($(for q in 1 2 3 4 5 6-1 6-2 7 8; do echo native-objects/query-$q; done))
-
 run_many NUM_EVENTS QUERY_IDS yes
 
 # Run the benchmarks
