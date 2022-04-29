@@ -19,6 +19,8 @@ bigquery/
 ...
 common/
     ...
+query-analysis/
+    ...
 ```
 
 ## Running experiments
@@ -152,32 +154,6 @@ run_many NUM_EVENTS QUERY_IDS no
 ```
 
 Note that there might be different patterns for the query names depending on the system. 
-
-### Obtaining the Soft Query Metrics
-
-In our paper we present a set of _soft metrics_, which attempt to summarize the user-friendliness when writing the ADL benchmark queries for each of the analyzed systems. For this task we employ the `experiments/common/keyword_counter.py` script. This script has the following parameters:
-
-```
-usage: keyword_counter.py [-h] [--extension EXTENSION] [--csv] [--avg-clauses] path
-
-Get the soft metrics for the JSONiq queries.
-
-positional arguments:
-  path                  Path to the queries.
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --extension EXTENSION
-                        The extension of the query files. Can be 'jq', 'sql', 'sqlpp', 'C'
-  --csv                 If present, dumps the summary of each query to csv.
-  --avg-clauses         If present, prints the aggregations of each statistic.
-``` 
-
-An example use of this script could be:
-
-```
-python keyword_counter.py --extension="sql" --avg-clauses path/to/experiments-scripts/experiments/athena/queries/queries
-```
 
 ## Mentions
 
