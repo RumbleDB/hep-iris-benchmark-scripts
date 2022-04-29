@@ -2,8 +2,17 @@
 
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+# Load config file
+config_file="$SOURCE_DIR/../common/config.sh"
+if ! [ -f "$config_file" ]
+then
+    echo "Config file config.sh not found." >&2
+    exit 1
+else
+    . "$config_file"
+fi
+
 INPUT_TABLE_FORMAT="Run2012B_SingleMu_restructured_external_%i_view"
-DATA_SET_ID="iris_hep_benchmark_data"
 NUM_RUNS=3
 
 experiments_dir="$SOURCE_DIR"/experiments
@@ -38,7 +47,7 @@ function run_one {(
 
     (
         "$query_cmd" -vs --log-cli-level INFO \
-            --bigquery-dataset "$DATA_SET_ID" \
+            --bigquery-dataset "$GS_DATASET_ID" \
             --input-table "$input_table" \
             --num-events $num_events \
             --query-id $query_id

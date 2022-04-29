@@ -47,7 +47,9 @@ Follow the instructions in the README of the git submodule under `queries` about
 
 ## Running experiments
 
-1. Adapt the ID of the data set and the table name format in the first lines of [`run_experiments.sh`](./run_experiments.sh). In order to run the "pre-loaded" and "external" variants of BigQuery, adapt the table name format accordingly.
+1. Choose to run the experiments against the "external" or "pre-loaded" tabels
+   by adapting the table name format in the first lines of
+   [`run_experiments.sh`](./run_experiments.sh).
 1. Possibly comment out all but one query and all but one small scale factor in the last lines of the same file for a first run.
 1. To run all queries defined in the script, simply run that script:
    ```bash
