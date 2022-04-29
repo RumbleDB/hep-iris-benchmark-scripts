@@ -10,7 +10,7 @@ plt.rcParams.update({
     'errorbar.capsize': 2,
     'pdf.fonttype': 42,
     'ps.fonttype': 42,
-    'font.family': 'Linux Libertine',
+    'font.family': ['Linux Libertine', 'Linux Libertine O'],
 })
 
 def export_legend(legend, filename="legend.pdf", expand=[-5,-5,5,5]):

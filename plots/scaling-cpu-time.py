@@ -12,7 +12,7 @@ plt.rcParams.update({
     'errorbar.capsize': 2,
     'pdf.fonttype': 42,
     'ps.fonttype': 42,
-    'font.family': 'Linux Libertine',
+    'font.family': ['Linux Libertine', 'Linux Libertine O'],
 })
 
 ETHa = ( 31/255,  64/255, 122/255) # dark blue
