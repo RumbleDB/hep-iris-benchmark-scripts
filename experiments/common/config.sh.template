@@ -6,7 +6,7 @@ INSTANCE_PROFILE="<YOUR_PREFERRED_ROLE>"  # Identifies an IAM to pass to created
 
 S3_REGION=""  # The S3 region; e.g. "eu-central-1"
 S3_INPUT_BUCKET=""  # The S3 bucket name where datasets are stored without the 's3://' prefix; e.g. "my-new-bucket"
-S3_INPUT_PATH=s3://${S3_INPUT_BUCKET}/  # The full path within the bucket where the data is stored; e.g. s3://my-new-bucket/path/to/folder
+S3_INPUT_PATH=s3://${S3_INPUT_BUCKET}  # The full path within the bucket where the data is stored; e.g. s3://my-new-bucket/path/to/folder
 
 # Create a user with read-only access to S3 or just the bucket above and
 # create an access key for that user as described in this guide:
@@ -17,7 +17,7 @@ S3_SECRET_KEY='...'
 S3_ACCESS_KEY='...'
 
 # GCP specific values
-GS_REGION=""  # The GCS region; e.g. "europe-west4-a"
+GS_REGION=""  # The GCS region; e.g. "europe-west4"
 GS_INPUT_BUCKET=""  # The GCS bucket name where datasets are stored without the 'gs://' prefix; e.g. "my-new-bucket"
-GS_INPUT_PATH=gs://${GS_INPUT_BUCKET}/  # The full path within the bucket where the data is stored; e.g. gs://my-new-bucket/path/to/folder
+GS_INPUT_PATH=gs://${GS_INPUT_BUCKET}  # The full path within the bucket where the data is stored; e.g. gs://my-new-bucket/path/to/folder
 GS_DATASET_ID='iris_hep_benchmark_data' # "namespace" for BigQuery tables. This value should work fine.
