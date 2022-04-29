@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(description='Postprocess experiments for Postgr
 parser.add_argument('exp_dir', type=str, help='The path to the experiment directory.')
 parser.add_argument("--log_filename", type=str, default="query_stats.log",
                     help="The standard name of the file to which the query stats are dumped.")
-parser.add_argument("--summary_filename", type=str, default="summary.jsonl",
+parser.add_argument("--summary_filename", type=str, default="summary.json",
                     help="The name of the file to which the summary in JSONL format is dumped.")
 
 
