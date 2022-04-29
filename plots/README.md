@@ -25,3 +25,13 @@ invoke all these script, simply run:
 ```
 
 That file also documents the mapping of the individual scripts to paper figures.
+
+## Compiling the plots in a PDF
+
+In order to produce a single PDF with all figures from the original paper,
+simply run the following command. (This does not regenerate the plots
+themselves!)
+
+```bash
+make
+```
