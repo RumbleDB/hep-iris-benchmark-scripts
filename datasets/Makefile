@@ -43,12 +43,14 @@ Run2012B_SingleMu_%.root: Run2012B_SingleMu.root
 	$(ROOTEVENTSELECTOR) -l $$(($(patsubst Run2012B_SingleMu_%.root, %, $@)-1)) $^:Events $@
 
 %.parquet: %.root
+	rm -rf $@
 	$(ROOT2PARQUET) --input $^ --output $@
 	mv $@ $@.dir
 	mv $@.dir/*.parquet $@
 	rm -rf $@.dir
 
 Run2012B_SingleMu_restructured_%.parquet: Run2012B_SingleMu_%.parquet
+	rm -rf $@
 	$(RESTRUCTURE) --input $^ --output $@
 	mv $@ $@.dir
 	mv $@.dir/*.parquet $@
