@@ -13,7 +13,7 @@ else
 fi
 
 # Create bucket
-gsutil mb -l europe-west6 gs://$GS_INPUT_BUCKET
+gsutil mb -l $GS_REGION gs://$GS_INPUT_BUCKET
 
 # Upload files
 for l in {0..16}
@@ -22,8 +22,8 @@ do
     basename="Run2012B_SingleMu"
 
     # Parquet shredded
-    gsutil cp "$SOURCE_DIR/${basename}_$n.parquet" \
-              "$GS_INPUT_PATH/${basename}_$n/${basename}_$n.parquet"
+    #gsutil cp "$SOURCE_DIR/${basename}_$n.parquet" \
+    #          "$GS_INPUT_PATH/${basename}_$n/${basename}_$n.parquet"
 
     # Parquet native
     gsutil cp "$SOURCE_DIR/${basename}_restructured_$n.parquet" \
