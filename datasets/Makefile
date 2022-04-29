@@ -1,5 +1,5 @@
 SCRIPTPATH:=$(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-REPOROOTDIR:=$(realpath $(SCRIPTPATH)/../../)
+REPOROOTDIR:=$(realpath $(SCRIPTPATH)/../)
 
 #
 # Input file
@@ -19,12 +19,12 @@ ROOTEVENTSELECTOR = docker run --rm -v$(SCRIPTPATH):$(SCRIPTPATH) --workdir $(SC
 #
 PYSPARK_IMAGE = jupyter/pyspark-notebook:spark-2
 SPARK_SUBMIT = docker run --rm -v$(REPOROOTDIR):$(REPOROOTDIR) -e NB_UID=$$(id -u) -e NB_USER=$$(id -un) -e NB_GID=$$(id -g) -e NB_GROUP=$$(id -gn) --user root --workdir $(SCRIPTPATH) $(PYSPARK_IMAGE) /usr/local/bin/start.sh /usr/local/spark/bin/spark-submit
-ROOT2PARQUET = $(SPARK_SUBMIT) --packages edu.vanderbilt.accre:laurelin:1.1.1 --driver-memory $$(($$(grep MemTotal /proc/meminfo | grep -oE "[0-9]*")/2))k $(REPOROOTDIR)/rumble/queries/tools/root2parquet.py
+ROOT2PARQUET = $(SPARK_SUBMIT) --packages edu.vanderbilt.accre:laurelin:1.1.1 --driver-memory $$(($$(grep MemTotal /proc/meminfo | grep -oE "[0-9]*")/2))k $(REPOROOTDIR)/experiments/rumble/queries/tools/root2parquet.py
 
 #
 # Restructure shredded to native format
 #
-RESTRUCTURE = $(SPARK_SUBMIT) $(REPOROOTDIR)/rumble/queries/tools/restructure.py
+RESTRUCTURE = $(SPARK_SUBMIT) $(REPOROOTDIR)/experiments/rumble/queries/tools/restructure.py
 
 #
 # Enumerate target files
