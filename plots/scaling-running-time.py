@@ -92,7 +92,7 @@ for i, query_id in enumerate(['1', '2', '3', '4', '5', '6-1', '6-2', '7', '8']):
 
 ax.set_xlim(0.8*1000*2**0, 128*NSF1/0.8)
 ax.set_xticks([NSF1*2**i for i in range(-16, 8)], minor=True)
-ax.set_xticklabels([''] * 34, minor=True)
+ax.set_xticklabels([''] * 24, minor=True)
 ax.set_xticks([NSF1*2**i for i in range(-12, 8, 6)])
 ax.set_xticklabels(['1/4Ki', '1/64', '1', '64'])
 ax.set_ylim(0.01, 10*60)
