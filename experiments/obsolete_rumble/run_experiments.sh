@@ -7,7 +7,7 @@ PORT_OFFSET=${1:-0}  # Useful when running multiple clusters in parallel
 INPUT_TABLE_FORMAT="/data/native/Run2012B_SingleMu-%i.parquet"
 NUM_RUNS=3
 
-experiments_dir="$SOURCE_DIR"/experiments/rumbledb
+experiments_dir="$SOURCE_DIR"/experiments/rumble
 query_cmd="$SOURCE_DIR"/queries/test_queries.py
 
 . "$SOURCE_DIR/conf.sh"

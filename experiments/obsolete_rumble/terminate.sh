@@ -6,7 +6,7 @@ SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 . "$SCRIPT_PATH/../common/ec2-helpers.sh"
 
 # Find deploy directory
-experiments_dir="$SCRIPT_PATH/../experiments/rumbledb"
+experiments_dir="$SCRIPT_PATH/../experiments/rumble"
 deploy_dir="$(discover_cluster "$experiments_dir")"
 
 # Close SSH tunnel

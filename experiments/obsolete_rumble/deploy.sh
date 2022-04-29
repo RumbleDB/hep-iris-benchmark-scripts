@@ -11,7 +11,7 @@ PORT_OFFSET=${3:-0}  # Useful when running multiple clusters in parallel
 . "$SCRIPT_PATH/../common/ec2-helpers.sh"
 
 # Deploy cluster
-experiments_dir="$SCRIPT_PATH/../experiments/rumbledb"
+experiments_dir="$SCRIPT_PATH/../experiments/rumble"
 mkdir -p "$experiments_dir"
 deploy_cluster "$experiments_dir" $NUM_INSTANCES $INSTANCE_TYPE
 
