@@ -30,19 +30,6 @@ common/
     ...
 ```
 
-## Data
-
-Our data is stored in S3 at the bucket address `s3://hep-adl-ethz`. For more information on how these datasets are obtained, please see the [`datasets/README.md`](datasets/README.md). There are several flavors of the dataset, each stored in their own directories:
-
-* `hep-csv/` - contains the `csv` version of the dataset.
-* `hep-parquet/` - contains the `parquet` version of the dataset.
-* `hep-root/` - contains the `root` versions of the dataset.
-
-In these folders you will often see several other subdirectories:
-
-* `native` - contains the version of the dataset where the data is readily re-structured into object for each type of particle.
-* `original` - contains the original version of the dataset where the particles are completely dis-assembled into their fundamental property (one column per property)
-
 ## Running experiments
 
 ### Prerequisites

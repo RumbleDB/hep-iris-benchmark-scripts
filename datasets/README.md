@@ -1,5 +1,34 @@
 # Datasets
 
+The datasets used in this repository and the corresponding paper are all
+derived from the following dataset:
+
+> CMS collaboration (2017). SingleMu primary dataset in AOD format from Run of
+> 2012 (/SingleMu/Run2012B-22Jan2013-v1/AOD). CERN Open Data Portal.
+> DOI: [10.7483/OPENDATA.CMS.IYVQ.1J0W](https://doi.org/10.7483/OPENDATA.CMS.IYVQ.1J0W).
+
+The file is available via the `root://` protocol under the following URL:
+
+> root://eospublic.cern.ch//eos/root-eos/benchmark/Run2012B_SingleMu.root
+
+We make the files we derived available on S3 and document below how we obtained
+them.
+
+## Download our files
+
+Our data is stored in S3 at the bucket address
+[`s3://hep-adl-ethz`](https://hep-adl-ethz.s3.amazonaws.com/). In that location,
+the files are stored in the following structure:
+
+* `hep-csv/` - contains the `csv` version of the dataset.
+* `hep-parquet/` - contains the `parquet` version of the dataset.
+* `hep-root/` - contains the `root` versions of the dataset.
+
+In these folders you will often see several other subdirectories:
+
+* `native` - contains the version of the dataset where the data is readily re-structured into object for each type of particle.
+* `original` - contains the original version of the dataset where the particles are completely dis-assembled into their fundamental property (one column per property)
+
 ## Generate subsets and Parquet formats
 
 The `Makefile` in this folder downloads the original datasets and creates all
