@@ -49,12 +49,23 @@ In these folders you will often see several other subdirectories:
 
 Before starting, the AWS CLI tool needs to be installed locally. Please follow [these instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) in order to install the tool. 
 
-Make sure to create a configuration file called `config.sh` in the `experiments/common/` folder. The file should have the following structure:
+Make sure to create a configuration file called `config.sh` in the `experiments/common/` folder. We provide a template in `experiments/common/config.sh.template` that demonstrates the required structure of this file:
 
 ```
 #!/usr/bin/env bash
-SSH_KEY_NAME="<YOUR_AWS_KEY_NAME>"
-INSTANCE_PROFILE="<YOUR_PREFERRED_ROLE>"
+
+# AWS specific values
+SSH_KEY_NAME=""  # The name of the AWS key used to access S3 and EC2 
+INSTANCE_PROFILE="<YOUR_PREFERRED_ROLE>"  # Identifies an IAM to pass to created EC2 instances 
+
+S3_REGION=""  # The S3 region; e.g. "eu-central-1"
+S3_INPUT_BUCKET=""  # The S3 bucket name where datasets are stored without the 's3://' prefix; e.g. "my-new-bucket"
+S3_INPUT_PATH=s3://${S3_INPUT_BUCKET}/  # The full path within the bucket where the data is stored; e.g. s3://my-new-bucket/path/to/folder
+
+# GCP specific values
+GS_REGION=""  # The GCS region; e.g. "europe-west4-a"
+GS_INPUT_BUCKET=""  # The GCS bucket name where datasets are stored without the 'gs://' prefix; e.g. "my-new-bucket"
+GS_INPUT_PATH=gs://${GS_INPUT_BUCKET}/  # The full path within the bucket where the data is stored; e.g. gs://my-new-bucket/path/to/folder
 ```
 
 The value of `SSH_KEY_NAME` should be filled in with the name of a Key Pair from AWS. The deployed cluster will require that key when being accessed via `ssh`. We highly recommend you use your default ssh key in AWS, as this will save a lot of effort when using our scripts (our scripts employ the default system ssh key when `ssh`-ing into AWS VMs). To import your default ssh key into AWS, follow these steps:
