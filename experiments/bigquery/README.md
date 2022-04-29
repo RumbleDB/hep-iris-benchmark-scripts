@@ -55,7 +55,8 @@ Follow the instructions in the README of the git submodule under `queries` about
    ```bash
    ./run_experiments.sh
    ```
-   This creates a new timestamped folder inside of `experiments/`./experiments/) that contains one folder for each query execution with files related to that execution.
+   This creates a new timestamped folder inside of `experiments/` that contains
+   one folder for each query execution with files related to that execution.
 
 ## Retrieving and parsing the statistics
 
