@@ -51,7 +51,7 @@ function deploy_cluster {
     mkdir -p "$deploy_dir"
 
     # Find image ID in this region
-    image_name="amzn2-ami-hvm-2.0.20200722.0-x86_64-gp2"
+    image_name="amzn2-ami-hvm-2.0.20221103.3-x86_64-gp2"
     image_id="$(aws ec2 describe-images \
                     --owners amazon \
                     --filters "Name=name,Values=$image_name" "Name=state,Values=available" \
