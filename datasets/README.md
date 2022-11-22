@@ -111,3 +111,5 @@ parquet/
     Run2012B_SingleMu_1000.root
   ...
 ```
+
+We provide `parquet` files with scale factors >1 at the address: `s3://hep-adl-ethz/hep-parquet/native-sf/`. 
