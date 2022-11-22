@@ -95,3 +95,19 @@ factor 1 in order to produce the larger scale factors.
 
 Some of the systems need additional loading, creating of views, etc. The
 READMEs of those systems contain the corresponding instructions.
+
+
+## Readily available files
+
+We have also stored the `root` and `parquet` files with scale factors <= 1 in S3 at the address `s3://hep-adl-ethz/artifact-evaluation/`. You can optionally use these files instead of generating your own. You'll see the following file structure under this address:
+
+```
+root/
+  Run2012B_SingleMu_restructured_1000/
+    Run2012B_SingleMu_restructured_1000.parquet
+  ...
+parquet/
+  Run2012B_SingleMu_1000/
+    Run2012B_SingleMu_1000.root
+  ...
+```
