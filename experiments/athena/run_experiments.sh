@@ -3,8 +3,8 @@
 SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 INPUT_TABLE_FORMAT="Run2012B_SingleMu_restructured_%i"
-WORK_GROUP="workgroup-v2"
-STAGING_DIR="s3://ingo-athena-output-eu-west-1/"
+WORK_GROUP="primary"
+STAGING_DIR="s3://<YOUR-ATHENA-STAGING-AREA>"
 ATHENA_DATABASE="iris_hep_benchmark"
 NUM_RUNS=3
 
