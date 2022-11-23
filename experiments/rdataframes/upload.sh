@@ -18,11 +18,10 @@ echo "Uploading data..."
 
     NSF1=53446198
 
-    for n in $(for l in {0..15}; do echo $((2**$l*1000)); done) \
-             $(for l in {0..0};  do echo $((2**$l*$NSF1)); done)
+    for n in $(for l in {0..2}; do echo $((2**$l*1000)); done)
     do
         ssh -q ec2-user@$dnsname \
-            aws s3 cp "$S3_INPUT_PATH/Run2012B_SingleMu_${n}.root" /data/input/
+            aws s3 cp "$S3_INPUT_PATH_ROOT/Run2012B_SingleMu_${n}/Run2012B_SingleMu_${n}.root" /data/input/
     done
 ) &>> "$deploy_dir/upload_$(date +%F-%H-%M-%S).log"
 echo "Done uploading data..."
