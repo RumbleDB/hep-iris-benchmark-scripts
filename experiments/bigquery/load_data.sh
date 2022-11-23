@@ -14,11 +14,14 @@ fi
 
 NSF1=53446198
 
+
 # Creates an internal table and loads its data
 function create_internal {(
     n=$1
     sf=$2
     variant=$3
+    basename="Run2012B_SingleMu${variant}"
+
 
     # Load data, possibly several times for scale-up
     for _ in $(seq 1 $sf)
