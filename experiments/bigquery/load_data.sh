@@ -27,7 +27,7 @@ function create_internal {(
     do
         bq load \
             --source_format=PARQUET \
-            "$GS_DATASET_ID.${basename}_$n"
+            "$GS_DATASET_ID.${basename}_$n" \
             "$GS_INPUT_PATH/${basename}_$n/${basename}_$n.parquet"
     done
 
