@@ -29,6 +29,6 @@ wait
 echo "Done deploying machines."
 
 # Set up SSH tunnel to head node
-ssh -L 8080:localhost:8080 -N -q ${dnsname[0]} &
+ssh -L 8080:localhost:8080 -N -q ec2-user@${dnsname[0]} &
 tunnelpid=$!
 echo "$tunnelpid" > "$deploy_dir/tunnel.pid"

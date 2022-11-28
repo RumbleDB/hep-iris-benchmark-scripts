@@ -149,7 +149,7 @@ do
 done
 
 # Set up SSH tunnel to head node
-ssh -L 19002:localhost:19002 -L 19006:localhost:19006 -N -q ${dnsnames[0]} &
+ssh -L 19002:localhost:19002 -L 19006:localhost:19006 -N -q ec2-user@${dnsnames[0]} &
 tunnelpid=$!
 echo "$tunnelpid" > "$deploy_dir/tunnel.pid"
 
