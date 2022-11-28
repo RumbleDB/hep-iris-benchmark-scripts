@@ -29,7 +29,7 @@ function create_external {(
 
     # Create external table
     table_def_file="$(mktemp)"
-    echo > "$table_def_file" <<-EOF
+    cat > "$table_def_file" <<-EOF
 	{
 	  "sourceFormat": "PARQUET",
 	  "sourceUris": [
