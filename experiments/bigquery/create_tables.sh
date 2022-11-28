@@ -46,8 +46,8 @@ function create_external {(
     # Create view
     bq mk \
         --use_legacy_sql=false \
-        --view "$(sed "s/dataset_id.table_name/$GS_DATASET_ID.${basename}_$n/" "$SOURCE_DIR/queries/view-native.sql")" \
-        "$GS_DATASET_ID.${basename}_${n}_view"
+        --view "$(sed "s/dataset_id.table_name/$GS_DATASET_ID.${basename}_external_$n/" "$SOURCE_DIR/queries/view-native.sql")" \
+        "$GS_DATASET_ID.${basename}_external_${n}_view"
 )}
 
 # Create external tables
