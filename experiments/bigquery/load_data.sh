@@ -22,7 +22,6 @@ function create_internal {(
     variant=$3
     basename="Run2012B_SingleMu${variant}"
 
-
     # Load data, possibly several times for scale-up
     for _ in $(seq 1 $sf)
     do

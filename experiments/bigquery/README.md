@@ -14,13 +14,13 @@ Follow the instructions in the README of the git submodule under `queries` about
    cloud storage.
 1. Set the `GS_*` variables in `config.sh` in the
    [`experiments/common`](../common/) folder. Then run the following script to
-   create a dataset ("namespace" for tables") and the definitions of the
+   create a dataset ("namespace" for tables) and the definitions of the
    external tables. These are essentially metadata operations and should run
    quickly.
    ```bash
    ./create_tables.sh
    ```
-1. Next, create the external tables and load the data with the following
+1. Next, create the internal tables and load the data with the following
    script.
 
    Note that that script is ***not idempotent***, i.e., if you run it several
