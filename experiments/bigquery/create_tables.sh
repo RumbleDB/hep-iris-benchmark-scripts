@@ -30,13 +30,14 @@ function create_external {(
     # Create external table
     table_def_file="$(mktemp)"
     echo > "$table_def_file" <<-EOF
-    {
-      "sourceFormat": "PARQUET",
-      "sourceUris": [
-         "$GS_INPUT_PATH/${basename}_$n/${basename}_$n.parquet"
-      ]
-    }
-    EOF
+	{
+	  "sourceFormat": "PARQUET",
+	  "sourceUris": [
+	     "$GS_INPUT_PATH/${basename}_$n/${basename}_$n.parquet"
+	  ]
+	}
+	EOF
+
     bq mk \
         --external_table_definition="$table_def_file" \
         "$GS_DATASET_ID.${basename}_external_$n"
