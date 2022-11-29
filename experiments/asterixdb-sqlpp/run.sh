@@ -11,6 +11,6 @@ deploy_dir="$(discover_cluster "$experiments_dir")"
 dnsnames=($(discover_dnsnames "$deploy_dir"))
 
 # Upload and run query file
-ssh -q ${dnsnames[0]} \
+ssh -q ec2-user@${dnsnames[0]} \
     curl -s --data-urlencode '"statement=$(cat -)"' \
         http://localhost:19002/query/service

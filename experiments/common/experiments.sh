@@ -55,7 +55,7 @@ function upload_singlecore {(
     input_size=$2
 
     # Delete old version
-    ssh -q ${dnsnames[0]} rm -rf /data/$data_set
+    ssh -q ec2-user@${dnsnames[0]} rm -rf /data/$data_set
 
     # Upload
     cd "$DATADIR/$data_set-$input_size"
