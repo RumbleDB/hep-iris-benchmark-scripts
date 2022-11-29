@@ -46,7 +46,8 @@ function run_one {(
             --database "$ATHENA_DATABASE" \
             --input-table "$input_table" \
             --num-events $num_events \
-            --query-id $query_id
+            --query-id $query_id \
+            --freeze-result
         exit_code=$?
         echo "Exit code: $exit_code"
         echo $exit_code > "$run_dir"/exit_code.log
