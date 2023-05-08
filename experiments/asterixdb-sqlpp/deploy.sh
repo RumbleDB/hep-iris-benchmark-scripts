@@ -45,7 +45,7 @@ do
                 <<-EOF
 				mkdir hadoop
 				cd hadoop
-				wget --progress=dot:giga https://downloads.apache.org/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz -O - | \
+				wget --progress=dot:giga https://archive.apache.org/dist/hadoop/core/hadoop-3.2.2/hadoop-3.2.2.tar.gz -O - | \
 				    tar -xz --strip-components=1
 				echo -n JAVA_HOME= | sudo tee -a /etc/environment
 				readlink -f /usr/bin/java | xargs dirname | xargs dirname | sudo tee -a /etc/environment
