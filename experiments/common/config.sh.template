@@ -11,8 +11,7 @@ S3_INPUT_PATH=s3://${S3_INPUT_BUCKET}  # The full path within the bucket where t
 # Create a user with read-only access to S3 or just the bucket above and
 # create an access key for that user as described in this guide:
 # https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/
-# Then paste the key components into the variables below. This is required only
-# by the experiments with RDataFrames.
+# Then paste the key components into the variables below.
 S3_SECRET_KEY='...'
 S3_ACCESS_KEY='...'
 
